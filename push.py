@@ -21,7 +21,7 @@ from pathlib import Path
 
 
 TARGET_OWNER = "ronandownes"
-TARGET_REPO = "applied-maths"
+TARGET_REPO = "am"
 
 # Choose ONE:
 # HTTPS (works with Git Credential Manager on Windows)

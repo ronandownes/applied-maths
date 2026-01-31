@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Active Maths 1 — Ratio and Proportion (Replica)</title>
+  <style>
+    :root{
+      --ink:#1b1f23;
+      --muted:#5b6770;
+      --blue:#1aa7c8;
+      --blue2:#2fb5d6;
+      --cream:#f6efe6;
+      --cream2:#fbf6ef;
+      --orange:#f08a24;
+      --orange2:#ff9f3a;
+      --border:#d7d2cc;
+      --panel:#ffffff;
+      --hint:#b9e3ea;
+      --red:#e63b3b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:#e9eef2;
+      color:var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      line-height:1.28;
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 18px auto 40px;
+      padding: 0 14px;
+    }
+    .page{
+      background:var(--panel);
+      border:1px solid #cfd8e3;
+      border-radius:10px;
+      box-shadow: 0 6px 20px rgba(12, 38, 63, .12);
+      margin: 18px 0;
+      overflow:hidden;
+    }
+    .page-inner{ padding: 22px 26px 18px; }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:12px;
+      padding: 14px 18px 10px;
+      background: linear-gradient(0deg, #148db0, #1aa7c8);
+      color:#fff;
+    }
+    .topbar .left{
+      font-weight:700;
+      letter-spacing:.02em;
+      font-size: 1.12rem;
+      display:flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .topbar .left .unitno{ font-size:1.25rem; opacity:.95; }
+    .topbar .left .unitname{ font-size:1.15rem; opacity:.98; }
+    .topbar .right{
+      font-weight:800;
+      font-size: 1.25rem;
+      opacity:.98;
+      white-space:nowrap;
+    }
+
+    .footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      padding: 10px 18px 14px;
+      color:#2d97b6;
+      font-style:italic;
+      font-weight:700;
+      border-top:1px solid #e6eef5;
+    }
+    .footer .pageno{
+      color:#1b1f23;
+      font-style:normal;
+      font-weight:700;
+      opacity:.9;
+    }
+
+    .section-title{
+      margin: 10px 0 10px;
+      font-size: 1.35rem;
+      font-weight:900;
+      color:#0d6b84;
+    }
+    .section-sub{
+      margin: 0 0 12px;
+      font-weight:700;
+      color: var(--red);
+    }
+
+    .worked{
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow:hidden;
+      background: linear-gradient(0deg, var(--cream2), var(--cream));
+      margin: 14px 0;
+    }
+    .worked .bar{
+      background: var(--orange);
+      color:#fff;
+      padding: 10px 14px;
+      font-weight:900;
+      letter-spacing:.02em;
+      font-size: 1.05rem;
+    }
+    .worked .body{ padding: 14px; }
+    .worked .q{ font-weight:700; margin-bottom:10px; }
+    .worked .solution-label{
+      color: var(--orange);
+      font-weight:900;
+      font-size: 1.15rem;
+      margin: 8px 0 10px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items:start;
+    }
+    .grid-3{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      align-items:start;
+    }
+
+    .step{
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 10px;
+      padding: 12px 12px 10px;
+    }
+    .step h4{
+      margin:0 0 8px;
+      font-size: 1rem;
+      font-weight:900;
+      color:#1b1f23;
+    }
+    .math{ font-family: ui-serif, Georgia, "Times New Roman", Times, serif; }
+    .calc{ margin: 6px 0; padding-left: 16px; }
+    .calc li{ margin: 4px 0; }
+    .note{
+      background: var(--hint);
+      border-radius: 10px;
+      padding: 12px 12px;
+      font-weight:700;
+      color:#114f5c;
+      border:1px solid rgba(0,0,0,.08);
+    }
+
+    .proportionality{
+      margin: 10px 0 0;
+      padding: 10px 12px;
+      border-top:1px solid rgba(0,0,0,.08);
+      color:#223;
+    }
+    .proportionality b{ color: var(--red); }
+
+    .subhead{
+      font-weight:900;
+      color:#0d6b84;
+      font-size: 1.2rem;
+      margin: 6px 0 6px;
+    }
+    .para{ margin: 0 0 10px; color: var(--ink); }
+    .muted{ color: var(--muted); }
+
+    .exercise{
+      border: 2px solid #8fd3e6;
+      border-radius: 10px;
+      overflow:hidden;
+      margin: 14px 0 10px;
+      background:#f7fdff;
+    }
+    .exercise .bar{
+      background:#8fd3e6;
+      color:#0b4e5e;
+      font-weight:900;
+      padding: 10px 14px;
+      font-size: 1.1rem;
+    }
+    .exercise .body{ padding: 12px 14px 8px; }
+    .qgrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+    .qitem{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .qno{
+      min-width: 1.6em;
+      font-weight:900;
+      color:#0b4e5e;
+    }
+
+    .graph-row{
+      display:grid;
+      grid-template-columns: 1.2fr .9fr;
+      gap: 16px;
+      align-items:start;
+      margin: 10px 0 6px;
+    }
+    .graphbox{
+      border:1px solid rgba(0,0,0,.15);
+      border-radius:10px;
+      padding:10px;
+      background:#fff;
+    }
+    .graphbox svg{ width:100%; height:auto; display:block; }
+
+    @media (max-width: 720px){
+      .page-inner{ padding: 18px 16px 14px; }
+      .grid-2, .grid-3{ grid-template-columns: 1fr; }
+      .qgrid{ grid-template-columns: 1fr; }
+      .graph-row{ grid-template-columns: 1fr; }
+      .topbar .right{ font-size:1.1rem; }
+    }
+
+    @media print{
+      body{ background:#fff; }
+      .wrap{ max-width:none; margin:0; padding:0; }
+      .page{ box-shadow:none; border:none; border-radius:0; margin:0; page-break-after:always; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <section class="page" aria-label="Page 222">
+      <header class="topbar">
+        <div class="left">
+          <span class="unitno">16</span>
+          <span class="unitname">Applied Arithmetic I</span>
+        </div>
+        <div class="right">Applied Arithmetic I</div>
+      </header>
+
+      <div class="page-inner">
+
+        <div class="exercise" style="margin-top:0">
+          <div class="bar">6</div>
+          <div class="body">
+            <div class="graph-row">
+              <div class="graphbox" aria-label="Trend graph">
+                <svg viewBox="0 0 640 360" role="img" aria-label="Trend graph of lunch cost over five days">
+                  <rect x="0" y="0" width="640" height="360" fill="#ffffff"/>
+                  <line x1="70" y1="40" x2="70" y2="300" stroke="#111" stroke-width="2"/>
+                  <line x1="70" y1="300" x2="600" y2="300" stroke="#111" stroke-width="2"/>
+                  <g stroke="#d9e2ea" stroke-width="1">
+                    <line x1="70" y1="260" x2="600" y2="260"/>
+                    <line x1="70" y1="220" x2="600" y2="220"/>
+                    <line x1="70" y1="180" x2="600" y2="180"/>
+                    <line x1="70" y1="140" x2="600" y2="140"/>
+                    <line x1="70" y1="100" x2="600" y2="100"/>
+                    <line x1="70" y1="60"  x2="600" y2="60"/>
+                    <line x1="176" y1="40" x2="176" y2="300"/>
+                    <line x1="282" y1="40" x2="282" y2="300"/>
+                    <line x1="388" y1="40" x2="388" y2="300"/>
+                    <line x1="494" y1="40" x2="494" y2="300"/>
+                  </g>
+
+                  <text x="22" y="58" font-size="18" fill="#111" font-weight="700">Cost €</text>
+                  <text x="572" y="338" font-size="18" fill="#111" font-weight="700">Day</text>
+
+                  <g font-size="16" fill="#111" font-weight="700">
+                    <text x="150" y="330">Mon</text>
+                    <text x="260" y="330">Tues</text>
+                    <text x="364" y="330">Weds</text>
+                    <text x="468" y="330">Thurs</text>
+                    <text x="580" y="330">Fri</text>
+                  </g>
+
+                  <polyline fill="none" stroke="#111" stroke-width="3"
+                    points="150,220 260,120 364,145 468,190 580,170" />
+                  <g fill="#2b7fb6" stroke="#1b1f23" stroke-width="1.5">
+                    <circle cx="150" cy="220" r="6"/>
+                    <circle cx="260" cy="120" r="6"/>
+                    <circle cx="364" cy="145" r="6"/>
+                    <circle cx="468" cy="190" r="6"/>
+                    <circle cx="580" cy="170" r="6"/>
+                  </g>
+                </svg>
+              </div>
+
+              <div>
+                <div class="q" style="font-weight:800; margin-bottom:6px;">
+                  The trend graph below shows the amount a student spent on lunches over a five-day period.
+                </div>
+                <ol class="calc" style="margin:0; padding-left:18px;">
+                  <li>Which day did they spend the most?</li>
+                  <li>How much did they spend on lunches on Wednesday?</li>
+                  <li>Was there any day they spent less than €4?</li>
+                  <li>If the cost of their lunch increased by €1 per day, how much would their lunch on Friday cost?</li>
+                  <li>If the cost increases by €1 per day, use this information to draw a graph on a copy of the diagram showing their new cost for each day.</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="qitem" style="margin-top:10px;">
+              <div class="qno">7</div>
+              <div>The cost of mobile data is 7c per MB when outside of Ireland. Milo has €3.78 credit on his phone. How much data can he use before he runs out of credit?</div>
+            </div>
+            <div class="qitem" style="margin-top:8px;">
+              <div class="qno">8</div>
+              <div>Marie pays a standing charge of €12 per month for her phone. Her data costs €0.19 per 50 MB. If Marie does <b>not</b> want to spend more than €50 on her next bill, what is the maximum amount of data she can use this month?</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">16.5 Ratio and Proportion</div>
+        <div class="section-sub">Ratios are often used to divide or share quantities.</div>
+
+        <div class="worked">
+          <div class="bar">Worked Example 16.11</div>
+          <div class="body">
+            <div class="q">
+              A pizza is cut into 14 equal slices and is shared between Alan, Brian and Ciara in the ratio
+              <span class="math">2 : 2 : 3</span>, respectively.
+              <br/>How many slices does each person get?
+            </div>
+
+            <div class="solution-label">Solution</div>
+
+            <div class="grid-2">
+              <div class="step">
+                <h4>Step 1</h4>
+                <div>Write down the total number of parts:</div>
+                <div class="math" style="margin-top:6px; font-weight:700;">
+                  2 + 2 + 3 = 7 parts
+                </div>
+              </div>
+
+              <div class="step">
+                <h4>Step 2</h4>
+                <div>Express each person’s share as a fraction of the total number of parts:</div>
+                <div class="math" style="margin-top:10px;">
+                  <div>Alan &nbsp;&nbsp; <b>2/7</b></div>
+                  <div>Brian &nbsp; <b>2/7</b></div>
+                  <div>Ciara &nbsp; <b>3/7</b></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step" style="margin-top:14px;">
+              <h4>Step 3</h4>
+              <div>Multiply each fraction by the amount to be shared:</div>
+              <div class="math" style="margin-top:8px;">
+                Alan: &nbsp; (2/7) × 14 = 4 slices &nbsp;&nbsp;&nbsp;
+                Brian: &nbsp; (2/7) × 14 = 4 slices &nbsp;&nbsp;&nbsp;
+                Ciara: &nbsp; (3/7) × 14 = 6 slices
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        <div class="pageno">222</div>
+        <div>Active MATHS 1</div>
+      </footer>
+    </section>
+
+    <section class="page" aria-label="Page 223">
+      <header class="topbar">
+        <div class="left">
+          <span class="unitno">16</span>
+          <span class="unitname">Applied Arithmetic I</span>
+        </div>
+        <div class="right">Applied Arithmetic I</div>
+      </header>
+
+      <div class="page-inner">
+
+        <div class="worked" style="margin-top:0">
+          <div class="bar">Worked Example 16.12</div>
+          <div class="body">
+            <div class="q">
+              Jack and Danny find an old money box. They decide to share out the money in the ratio of their ages.
+              Jack is 8 and Danny is 10. If Danny gets €60:
+              <div style="display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:6px;">
+                <div>(a) How much was in the money box?</div>
+                <div>(b) How much did Jack get?</div>
+              </div>
+            </div>
+
+            <div class="solution-label">Solution</div>
+
+            <div class="grid-2">
+              <div class="step">
+                <h4>Step 1</h4>
+                <div>Find what 1 part is equal to:</div>
+                <div class="math" style="margin-top:8px;">
+                  Danny = 10 parts = €60
+                  <div style="margin-top:6px; font-weight:700;">
+                    10 parts / 10 = €60 / 10
+                  </div>
+                  <div style="margin-top:6px; font-weight:700;">
+                    1 part = €6
+                  </div>
+                </div>
+                <div class="muted" style="margin-top:8px; font-weight:700;">Divide both sides by 10.</div>
+              </div>
+
+              <div class="step">
+                <h4>Step 2</h4>
+                <div>Find the total number of parts:</div>
+                <div class="math" style="margin-top:8px; font-weight:700;">
+                  8 parts + 10 parts = 18 parts
+                </div>
+                <div class="math" style="margin-top:10px;">
+                  1 part × 18 = €6 × 18
+                </div>
+                <div class="math" style="margin-top:6px; font-weight:900;">
+                  ∴ 18 parts = €108
+                </div>
+                <div style="margin-top:6px; font-weight:800;">Total money = €108</div>
+
+                <div style="margin-top:12px; font-weight:800;">(b) Jack got 8 parts:</div>
+                <div class="math" style="margin-top:6px; font-weight:900;">€6 × 8 = €48</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="proportionality">
+          <div class="subhead" style="margin:0 0 6px;">Proportionality</div>
+          <div>Two quantities are in direct <b>proportion</b> if, when the numbers involved are changed, their ratios stay the same.</div>
+        </div>
+
+        <div class="worked">
+          <div class="bar">Worked Example 16.13</div>
+          <div class="body">
+            <div class="q">
+              Allie’s pocket money is in direct proportion to the number of hours of chores done.
+              She gets €12 for every two hours of chores she does.
+              <div style="margin-top:6px;">
+                (a) If Allie helps out at home for three hours, how much will she get?
+                <br/>(b) How many hours would she have to help out for to get €36?
+              </div>
+            </div>
+
+            <div class="solution-label">Solution</div>
+
+            <div class="grid-2">
+              <div class="step">
+                <h4>(a)</h4>
+                <div>Find out what she gets for 1 hour:</div>
+                <div class="math" style="margin-top:8px;">
+                  2 hours = €12<br/>
+                  1 hour = €6
+                </div>
+                <div class="math" style="margin-top:8px; font-weight:900;">
+                  So 3 hours = €6 × 3 = €18
+                </div>
+                <div style="margin-top:8px; font-weight:800;">Allie will get €18.</div>
+              </div>
+
+              <div class="step">
+                <h4>(b)</h4>
+                <div>Find the number of hours she needs to work to get €36:</div>
+                <div class="math" style="margin-top:8px;">
+                  From part (a):<br/>
+                  1 hour = €6
+                </div>
+                <div class="math" style="margin-top:8px; font-weight:900;">
+                  €36 ÷ €6 = 6 hours
+                </div>
+                <div style="margin-top:8px; font-weight:800;">Allie will have to help out for 6 hours.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        <div class="pageno">223</div>
+        <div>Active MATHS 1</div>
+      </footer>
+    </section>
+
+    <section class="page" aria-label="Page 224">
+      <header class="topbar">
+        <div class="left">
+          <span class="unitno">16</span>
+          <span class="unitname">Applied Arithmetic I</span>
+        </div>
+        <div class="right">Applied Arithmetic I</div>
+      </header>
+
+      <div class="page-inner">
+
+        <div class="subhead" style="margin-top:0;">Value for Money Calculations and Judgements</div>
+        <p class="para muted">
+          Proportion calculations can be used to decide which items in a shop offer the best value for money.
+          Many items sold in supermarkets display a price, and a price per 100 g (or per kg) on the shelf edge label in front of the product.
+          This lets customers compare products and get the best value for money.
+        </p>
+
+        <div class="worked" style="margin-top:10px;">
+          <div class="bar">Worked Example 16.14</div>
+          <div class="body">
+            <div class="q">
+              Chocolate finger biscuits are on offer in two different sizes in Gerry’s local shop.
+              A 140 g pack costs €1.50 while a 230 g pack costs €3.00.
+              <b>Which pack is the better value?</b> Justify your answer.
+            </div>
+
+            <div class="solution-label">Solution</div>
+
+            <div class="grid-3">
+              <div class="step">
+                <h4>Step 1</h4>
+                <div>Find the cost of 100 g for the 140 g pack:</div>
+                <div class="math" style="margin-top:8px;">
+                  140 g = €1.50<br/>
+                  1 g = €1.50 / 140<br/>
+                  100 g = (€1.50 / 140) × 100 = €1.07
+                </div>
+                <div style="margin-top:6px; font-weight:800;">∴ Price per 100 g is €1.07 (to the nearest cent)</div>
+              </div>
+
+              <div class="step">
+                <h4>Step 2</h4>
+                <div>Find the cost of 100 g for the 230 g pack:</div>
+                <div class="math" style="margin-top:8px;">
+                  230 g = €3.00<br/>
+                  1 g = €3.00 / 230<br/>
+                  100 g = (€3.00 / 230) × 100 = €1.30
+                </div>
+                <div style="margin-top:6px; font-weight:800;">∴ Price per 100 g is €1.30 (to the nearest cent)</div>
+              </div>
+
+              <div class="step">
+                <h4>Step 3</h4>
+                <div>Give your judgement:</div>
+                <div style="margin-top:10px; font-weight:900;">
+                  The 140 g pack is the better value, as it is cheaper per 100 g.
+                </div>
+                <div class="note" style="margin-top:12px;">
+                  It can be difficult to make the comparison when decimals are involved, so it’s a good idea to compare using 100 g and round the price to the nearest cent.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="worked">
+          <div class="bar">Worked Example 16.15</div>
+          <div class="body">
+            <div class="q">
+              If 1 kg of fusilli pasta costs €3.19, and 750 g of pasta shells costs €1.69,
+              which one is value for money? Justify your answer.
+            </div>
+
+            <div class="solution-label">Solution</div>
+
+            <div class="grid-2">
+              <div class="step">
+                <h4>Step 1</h4>
+                <div>Find the cost of 100 g of fusilli:</div>
+                <div class="math" style="margin-top:8px;">
+                  (Remember 1 kg = 1,000 g)<br/><br/>
+                  1,000 g = €3.19<br/>
+                  100 g = €3.19 / 10<br/>
+                  100 g = €0.319
+                </div>
+                <div style="margin-top:6px; font-weight:800;">∴ Price per 100 g is €0.32 (to the nearest cent)</div>
+              </div>
+
+              <div class="step">
+                <h4>Step 2</h4>
+                <div>Find the cost of 100 g of pasta shells:</div>
+                <div class="math" style="margin-top:8px;">
+                  750 g = €1.69<br/>
+                  1 g = €1.69 / 750<br/>
+                  100 g = (€1.69 / 750) × 100<br/>
+                  100 g = €0.225
+                </div>
+                <div style="margin-top:6px; font-weight:800;">∴ Price per 100 g is €0.23 (to the nearest cent)</div>
+
+                <div style="margin-top:12px; font-weight:900;">Step 3 &nbsp; Make your judgement.</div>
+                <div style="margin-top:6px; font-weight:900;">
+                  The 750 g pack of pasta shells is the better value for money, as it is cheaper per 100 g.
+                </div>
+
+                <div class="note" style="margin-top:12px;">
+                  Always make sure your units of measurement are the same — either all kg or all g.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+        <div class="pageno">224</div>
+        <div>Active MATHS 1</div>
+      </footer>
+    </section>
+
+    <section class="page" aria-label="Page 225">
+      <header class="topbar">
+        <div class="left">
+          <span class="unitno">16</span>
+          <span class="unitname">Applied Arithmetic I</span>
+        </div>
+        <div class="right">Applied Arithmetic I</div>
+      </header>
+
+      <div class="page-inner">
+
+        <div class="exercise" style="margin-top:0">
+          <div class="bar">Exercise 16.5</div>
+          <div class="body">
+            <div class="qgrid">
+
+              <div class="qitem"><div class="qno">1</div><div>Divide €4,500 in the ratio 6 : 9.</div></div>
+              <div class="qitem"><div class="qno">3</div><div>Divide 90 m in the ratio 1 : 2 : 3.</div></div>
+
+              <div class="qitem"><div class="qno">2</div><div>Divide 156 kg in the ratio 8 : 5.</div></div>
+              <div class="qitem"><div class="qno">4</div><div>Divide 840 g in the ratio 5 : 1 : 1.</div></div>
+
+              <div class="qitem"><div class="qno">5</div><div>Claire, Laura and Emma go to a rugby match. The total cost of their tickets is €180. Emma forgot her wallet and only had some cash. They end up paying in the ratio 4 : 4 : 1. How much did each girl pay?</div></div>
+              <div class="qitem"><div class="qno">6</div><div>A teacher gives a prize of €24 to the three students who have made the biggest effort in her class. She decides to divide the money in the ratio of their results. If the results of the winners are 94%, 83% and 63%, how will the €24 be divided?</div></div>
+
+              <div class="qitem"><div class="qno">7</div><div>An electrician charges €45 for an hour’s work. How much will he charge for a job that takes three hours?</div></div>
+              <div class="qitem"><div class="qno">8</div><div>Julie babysits at the weekend. She charges €15 per hour. If she receives €60, how many hours was she babysitting for?</div></div>
+
+              <div class="qitem"><div class="qno">9</div><div>A piece of wood is cut in the ratio 5 : 2 : 1. If the shortest piece is 120 cm, what is the length of each of the other two pieces?</div></div>
+              <div class="qitem"><div class="qno">10</div><div>A pizza is cut into equal slices and divided between Jane and Paul in the ratio 3 : 2. If Jane gets 6 slices:
+                <div style="margin-top:6px;">
+                  (a) How many slices were there? <br/>
+                  (b) How many slices did Paul get?
+                </div>
+              </div></div>
+
+              <div class="qitem"><div class="qno">11</div><div>Ross makes biscuits by mixing sugar and flour in the ratio 6 : 9. If he uses 180 g of sugar, how much flour does he use?</div></div>
+              <div class="qitem"><div class="qno">12</div><div>Colin has two children aged 9 years and 4 years. He won a sum of money and decided to divide it between his two children in the ratio of their ages. If his youngest child gets €340, how much did Colin win?</div></div>
+
+              <div class="qitem"><div class="qno">13</div><div>A 1.25 litre bottle of lemonade costs €1.89 and a 2 litre bottle of the same lemonade costs €2.30. Which bottle is the better value?</div></div>
+              <div class="qitem"><div class="qno">14</div><div>If 2 kg of basmati rice costs €2.68 and 500 g of long grain rice costs €0.95, which one is the best value for money?</div></div>
+
+              <div class="qitem"><div class="qno">15</div><div>A shop has the following cereals for sale: A 1 kg box for €3.50, a 450 g box for €2.19, and a 790 g box for €2.90. Which box is the best value?</div></div>
+              <div class="qitem"><div class="qno">16</div><div>A 135 g sharing bag of crisps is €2.55 and a multipack consisting of 6 × 25 g bags of the same crisps is €2.80. Which is the better value?</div></div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">16.6 Currency Exchange</div>
+        <p class="para muted">
+          In the Eurozone, the unit of currency is the euro (€). If you travel to any country within the Eurozone,
+          there is no need to change your money. However, if you travel to any country outside of the Eurozone,
+          you will need to change your money. For example, if you travel to Japan, you will need to convert your money from euro into Japanese yen.
+        </p>
+        <p class="para muted">
+          The <b style="color:var(--red)">exchange rate</b> between two currencies tells you how much one unit of the first currency is worth in units of the second currency.
+        </p>
+
+      </div>
+
+      <footer class="footer">
+        <div class="pageno">225</div>
+        <div>Active MATHS 1</div>
+      </footer>
+    </section>
+
+  </div>
+</body>
+</html>

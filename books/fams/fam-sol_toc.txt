@@ -1,0 +1,108 @@
+# Fundamental Applied Mathematics - Solutions - Table of Contents
+# Use actual file page numbers (no offset)
+# PDF file: fam-sol_Optimized.pdf (426 pages)
+
+CHAPTER|01|Units & Vectors (Solutions)|CH01S.0|start=1|end=30
+SECTION|1.A|Exercise 1.A|start=1|end=5|end_inclusive=true
+SECTION|1.B|Exercise 1.B|start=6|end=11|end_inclusive=true
+SECTION|1.C|Exercise 1.C|start=12|end=17|end_inclusive=true
+SECTION|1.D|Exercise 1.D|start=18|end=21|end_inclusive=true
+SECTION|1.E|Exercise 1.E|start=22|end=24|end_inclusive=true
+SECTION|1.F|Exercise 1.F|start=25|end=27|end_inclusive=true
+SECTION|1.G|Exercise 1.G|start=28|end=30|end_inclusive=true
+
+CHAPTER|02|Uniform Acceleration (Solutions)|CH02S.0|start=31|end=58
+SECTION|2.A|Exercise 2.A|start=31|end=34|end_inclusive=true
+SECTION|2.B|Exercise 2.B|start=35|end=40|end_inclusive=true
+SECTION|2.C|Exercise 2.C|start=41|end=43|end_inclusive=true
+SECTION|2.D|Exercise 2.D|start=44|end=45|end_inclusive=true
+SECTION|2.E|Exercise 2.E|start=46|end=48|end_inclusive=true
+SECTION|2.F|Exercise 2.F|start=49|end=50|end_inclusive=true
+SECTION|2.G|Exercise 2.G|start=51|end=52|end_inclusive=true
+SECTION|2.H|Exercise 2.H|start=53|end=55|end_inclusive=true
+SECTION|2.I|Exercise 2.I|start=56|end=58|end_inclusive=true
+
+CHAPTER|03|Projectiles (Solutions)|CH03S.0|start=59|end=82
+SECTION|3.A|Exercise 3.A|start=59|end=61|end_inclusive=true
+SECTION|3.B|Exercise 3.B|start=62|end=63|end_inclusive=true
+SECTION|3.C|Exercise 3.C|start=64|end=68|end_inclusive=true
+SECTION|3.D|Exercise 3.D|start=69|end=70|end_inclusive=true
+SECTION|3.E|Exercise 3.E|start=71|end=75|end_inclusive=true
+SECTION|3.F|Exercise 3.F|start=76|end=80|end_inclusive=true
+SECTION|3.G|Exercise 3.G|start=81|end=82|end_inclusive=true
+
+CHAPTER|04|Newton’s Laws & Connected Particles (Solutions)|CH04S.0|start=83|end=119
+SECTION|4.A|Exercise 4.A|start=83|end=119|end_inclusive=true
+
+CHAPTER|05|Work, Power, Energy & Momentum (Solutions)|CH05S.0|start=120|end=133
+SECTION|5.A|Exercise 5.A|start=120|end=123|end_inclusive=true
+SECTION|5.B|Exercise 5.B|start=124|end=125|end_inclusive=true
+SECTION|5.C|Exercise 5.C|start=126|end=127|end_inclusive=true
+SECTION|5.D|Exercise 5.D|start=128|end=128|end_inclusive=true
+SECTION|5.E|Exercise 5.E|start=129|end=130|end_inclusive=true
+SECTION|5.F|Exercise 5.F|start=131|end=133|end_inclusive=true
+
+CHAPTER|06|Impacts and Collisions (Solutions)|CH06S.0|start=134|end=187
+SECTION|6.A|Exercise 6.A|start=134|end=140|end_inclusive=true
+SECTION|6.B|Exercise 6.B|start=141|end=187|end_inclusive=true
+
+CHAPTER|07|Motion in a Circle (Solutions)|CH07S.0|start=188|end=215
+SECTION|7.A|Exercise 7.A|start=188|end=188|end_inclusive=true
+SECTION|7.B|Exercise 7.B|start=189|end=192|end_inclusive=true
+SECTION|7.C|Exercise 7.C|start=193|end=196|end_inclusive=true
+SECTION|7.D|Exercise 7.D|start=197|end=205|end_inclusive=true
+SECTION|7.E|Exercise 7.E|start=206|end=210|end_inclusive=true
+SECTION|7.F|Exercise 7.F|start=211|end=215|end_inclusive=true
+
+CHAPTER|08|Difference Equations (Solutions)|CH08S.0|start=216|end=251
+SECTION|8.A|Exercise 8.A|start=216|end=220|end_inclusive=true
+SECTION|8.B|Exercise 8.B|start=221|end=222|end_inclusive=true
+SECTION|8.C|Exercise 8.C|start=223|end=228|end_inclusive=true
+SECTION|8.D|Exercise 8.D|start=229|end=231|end_inclusive=true
+SECTION|8.E|Exercise 8.E|start=232|end=239|end_inclusive=true
+SECTION|8.F|Exercise 8.F|start=240|end=246|end_inclusive=true
+SECTION|8.G|Exercise 8.G|start=247|end=251|end_inclusive=true
+
+CHAPTER|09|Differentiation and Integration (Solutions)|CH09S.0|start=252|end=284
+SECTION|9.A|Exercise 9.A|start=252|end=253|end_inclusive=true
+SECTION|9.B|Exercise 9.B|start=254|end=254|end_inclusive=true
+SECTION|9.C|Exercise 9.C|start=255|end=257|end_inclusive=true
+SECTION|9.D|Exercise 9.D|start=258|end=262|end_inclusive=true
+SECTION|9.E|Exercise 9.E|start=263|end=267|end_inclusive=true
+SECTION|9.F|Exercise 9.F|start=268|end=276|end_inclusive=true
+SECTION|9.G|Exercise 9.G|start=277|end=278|end_inclusive=true
+SECTION|9.H|Exercise 9.H|start=279|end=280|end_inclusive=true
+SECTION|9.I|Exercise 9.I|start=281|end=284|end_inclusive=true
+
+CHAPTER|10|Differential Equations (Solutions)|CH10S.0|start=285|end=338
+SECTION|10.A|Exercise 10.A|start=285|end=286|end_inclusive=true
+SECTION|10.B|Exercise 10.B|start=287|end=296|end_inclusive=true
+SECTION|10.C|Exercise 10.C|start=297|end=299|end_inclusive=true
+SECTION|10.D|Exercise 10.D|start=300|end=305|end_inclusive=true
+SECTION|10.E|Exercise 10.E|start=306|end=318|end_inclusive=true
+SECTION|10.F|Exercise 10.F|start=319|end=323|end_inclusive=true
+SECTION|10.G|Exercise 10.G|start=324|end=328|end_inclusive=true
+SECTION|10.H|Exercise 10.H|start=329|end=338|end_inclusive=true
+
+CHAPTER|11|Networks and Graphs (Solutions)|CH11S.0|start=339|end=375
+SECTION|11.A|Exercise 11.A|start=339|end=342|end_inclusive=true
+SECTION|11.B|Exercise 11.B|start=343|end=344|end_inclusive=true
+SECTION|11.C|Exercise 11.C|start=345|end=347|end_inclusive=true
+SECTION|11.D|Exercise 11.D|start=348|end=352|end_inclusive=true
+SECTION|11.E|Exercise 11.E|start=353|end=355|end_inclusive=true
+SECTION|11.F|Exercise 11.F|start=356|end=359|end_inclusive=true
+SECTION|11.G|Exercise 11.G|start=360|end=364|end_inclusive=true
+SECTION|11.H|Exercise 11.H|start=365|end=368|end_inclusive=true
+SECTION|11.I|Exercise 11.I|start=369|end=375|end_inclusive=true
+
+CHAPTER|12|Optimal Paths (Solutions)|CH12S.0|start=376|end=426
+SECTION|12.A|Exercise 12.A|start=376|end=378|end_inclusive=true
+SECTION|12.B|Exercise 12.B|start=379|end=382|end_inclusive=true
+SECTION|12.C|Exercise 12.C|start=383|end=386|end_inclusive=true
+SECTION|12.D|Exercise 12.D|start=387|end=388|end_inclusive=true
+SECTION|12.E|Exercise 12.E|start=389|end=392|end_inclusive=true
+SECTION|12.F|Exercise 12.F|start=393|end=396|end_inclusive=true
+SECTION|12.G|Exercise 12.G|start=397|end=402|end_inclusive=true
+SECTION|12.H|Exercise 12.H|start=403|end=409|end_inclusive=true
+SECTION|12.I|Exercise 12.I|start=410|end=419|end_inclusive=true
+SECTION|12.J|Exercise 12.J|start=420|end=426|end_inclusive=true

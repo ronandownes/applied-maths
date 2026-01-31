@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ronan Downes • Applied Maths</title>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --panel: rgba(255,255,255,0.06);
+    --panel2: rgba(255,255,255,0.04);
+    --stroke: rgba(255,255,255,0.10);
+    --text: rgba(255,255,255,0.92);
+    --muted: rgba(255,255,255,0.65);
+    --shadow: 0 24px 60px rgba(0,0,0,0.45);
+    --r: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    background: radial-gradient(1200px 600px at 20% 0%, rgba(255,255,255,0.08), transparent 50%),
+                radial-gradient(900px 500px at 90% 10%, rgba(255,255,255,0.06), transparent 55%),
+                var(--bg);
+    color: var(--text);
+  }
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 18px 60px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px;
+    border: 1px solid var(--stroke);
+    background: var(--panel);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .brand h1 {
+    font-size: 18px;
+    margin: 0;
+    letter-spacing: 0.2px;
+  }
+  .brand p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .spacer { flex: 1; }
+  .pill {
+    border: 1px solid var(--stroke);
+    background: var(--panel2);
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .section {
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px solid var(--stroke);
+    background: var(--panel2);
+    border-radius: var(--r);
+  }
+  .section-head h1 {
+    font-size: 16px;
+    margin: 0 0 6px;
+  }
+  .muted {
+    color: var(--muted);
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.82);
+    background: rgba(0,0,0,0.25);
+    padding: 2px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .block { margin-top: 16px; }
+  .block-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .block-head h2 {
+    font-size: 14px;
+    margin: 0;
+    color: rgba(255,255,255,0.88);
+  }
+  .count { color: var(--muted); font-size: 12px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 14px 14px 12px;
+    border-radius: 16px;
+    border: 1px solid var(--stroke);
+    background: rgba(0,0,0,0.18);
+    transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    background: rgba(0,0,0,0.25);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .card-title {
+    font-size: 14px;
+    margin: 0 0 6px;
+    letter-spacing: 0.1px;
+  }
+  .chip {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.72);
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.05);
+    padding: 4px 8px;
+    border-radius: 999px;
+  }
+  .tiles {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .tile {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--stroke);
+    background: rgba(0,0,0,0.20);
+    transition: transform 120ms ease, border-color 120ms ease;
+    min-height: 60px;
+  }
+  .tile:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .tile img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+  }
+  .tile-label {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.82);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tile.tile-text {
+    display: flex;
+    align-items: center;
+  }
+  footer {
+    margin-top: 22px;
+    text-align: center;
+    color: rgba(255,255,255,0.50);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+  <rect x="2" y="2" width="40" height="40" rx="12" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.10)"/>
+  <circle cx="16" cy="16" r="4" fill="white" opacity="0.90"/>
+  <circle cx="28" cy="16" r="4" fill="white" opacity="0.70"/>
+  <circle cx="16" cy="28" r="4" fill="white" opacity="0.70"/>
+  <circle cx="28" cy="28" r="4" fill="white" opacity="0.90"/>
+</svg>
+        <div>
+          <h1>Ronan Downes • Applied Maths</h1>
+          <p>Interactive explorations, notes, and book viewers</p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="pill">Auto-indexed • apps + books</div>
+    </header>
+
+    <section class="section">
+  <div class="section-head">
+    <h1>Apps</h1>
+    <p class="muted">Drop any <code>.html</code> file into the site root and it appears here automatically.</p>
+  </div>
+  <section class="block">
+  <div class="block-head">
+    <h2>Unsorted</h2>
+    <div class="count">2 apps</div>
+  </div>
+  <div class="grid">
+    <a class="card" href="-app-template.html">
+  <div class="card-title">App Template</div>
+  <p class='muted'>&nbsp;</p>
+  <div class="chip">Unsorted</div>
+</a><a class="card" href="am1-ch6-collisions (2).html">
+  <div class="card-title">Chapter 6: Impacts & Collisions</div>
+  <p class='muted'>&nbsp;</p>
+  <div class="chip">Unsorted</div>
+</a>
+  </div>
+</section>
+</section>
+    <section class="section">
+  <div class="section-head">
+    <h1>Books</h1>
+    <p class="muted">Viewer pages are discovered in <code>books/&lt;book&gt;/viewer.html</code>.</p>
+  </div>
+  <div class="tiles">
+    <a href="books/am4/viewer.html" class="tile" title="am4">
+  <img src="books/am4/pages/001.webp" alt="am4">
+  <div class="tile-label">am4</div>
+</a><a href="books/am42/viewer.html" class="tile" title="am42">
+  <img src="books/am42/pages/001.webp" alt="am42">
+  <div class="tile-label">am42</div>
+</a><a href="books/cs/viewer.html" class="tile" title="cs">
+  <img src="books/cs/pages/001.webp" alt="cs">
+  <div class="tile-label">cs</div>
+</a><a href="books/fam/viewer.html" class="tile" title="fam">
+  <img src="books/fam/pages/001.webp" alt="fam">
+  <div class="tile-label">fam</div>
+</a><a href="books/fams/viewer.html" class="tile" title="fams">
+  <img src="books/fams/pages/001.webp" alt="fams">
+  <div class="tile-label">fams</div>
+</a><a href="books/ft/viewer.html" class="tile" title="ft">
+  <img src="books/ft/pages/001.webp" alt="ft">
+  <div class="tile-label">ft</div>
+</a><a href="books/rwp/viewer.html" class="tile" title="rwp">
+  <img src="books/rwp/pages/001.webp" alt="rwp">
+  <div class="tile-label">rwp</div>
+</a><a href="books/tt4/viewer.html" class="tile" title="tt4">
+  <img src="books/tt4/pages/001.webp" alt="tt4">
+  <div class="tile-label">tt4</div>
+</a><a href="books/tt5/viewer.html" class="tile" title="tt5">
+  <img src="books/tt5/pages/001.webp" alt="tt5">
+  <div class="tile-label">tt5</div>
+</a>
+  </div>
+</section>
+
+    <footer>
+      Built by index-builder.py • Drop apps in root • Book viewers in books/&lt;book&gt;/
+    </footer>
+  </div>
+</body>
+</html>

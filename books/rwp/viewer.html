@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>rwp - Viewer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { touch-action: pan-x pan-y; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+        :fullscreen { width: 100% !important; height: 100% !important; }
+        
+        .toc-toggle-fixed {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            z-index: 2000;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 8px 6px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .toc-toggle-fixed:hover { background: #0080ff; padding-left: 10px; }
+        
+        .toc-sidebar {
+            width: 300px;
+            background: #222;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, width 0.3s;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+        .toc-collapsed .toc-sidebar { transform: translateX(-300px); width: 0; }
+        
+        .toc-header {
+            padding: 8px 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toc-header h2 { font-size: 13px; color: #fff; }
+        .toc-close {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+        .toc-close:hover { background: #333; }
+        
+        .toc-content { flex: 1; overflow-y: auto; padding: 4px; }
+        
+        .toc-chapter { margin-bottom: 2px; border-radius: 2px; overflow: hidden; }
+        .toc-chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 6px;
+            background: #2a2a2a;
+            cursor: pointer;
+            user-select: none;
+        }
+        .toc-chapter-header:hover { background: #333; }
+        .chapter-expand { color: #66b3ff; font-size: 9px; width: 12px; transition: transform 0.2s; }
+        .chapter-expand.expanded { transform: rotate(90deg); }
+        .chapter-number { color: #66b3ff; font-weight: bold; font-size: 10px; min-width: 24px; }
+        .toc-chapter-title { font-weight: 500; font-size: 10px; flex: 1; line-height: 1.3; }
+        
+        .toc-sections { max-height: 0; overflow: hidden; transition: max-height 0.3s; background: #222; }
+        .toc-chapter.expanded .toc-sections { max-height: 1000px; }
+        
+        .toc-section {
+            padding: 4px 6px 4px 32px;
+            font-size: 9px;
+            cursor: pointer;
+            display: flex;
+            gap: 4px;
+            line-height: 1.3;
+        }
+        .toc-section:hover { background: #2a2a2a; }
+        .toc-section.active { background: #333; color: #fff; }
+        .section-number { color: #666; font-size: 8px; min-width: 24px; }
+        
+        .viewer { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Controls - centered */
+        .controls {
+            background: #222;
+            padding: 4px 8px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            touch-action: manipulation;
+        }
+        
+        .controls-center {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        button {
+            background: #333;
+            border: 1px solid #444;
+            color: #ccc;
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            min-width: 32px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover { background: #444; }
+        button.active { background: #0066cc; border-color: #0080ff; color: #fff; }
+        button.copied { background: #2e7d32 !important; }
+        
+        /* Page info - clickable */
+        .page-info {
+            display: flex;
+            align-items: baseline;
+            font-size: 12px;
+            gap: 2px;
+            margin: 0 6px;
+        }
+        #current-page {
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 3px;
+            min-width: 18px;
+            text-align: center;
+        }
+        #current-page:hover { background: #444; }
+        .page-slash { color: #555; font-size: 10px; }
+        #total-pages { color: #666; font-size: 10px; }
+        
+        .page-input-inline {
+            width: 36px;
+            padding: 3px;
+            font-size: 12px;
+            text-align: center;
+            background: #1a1a1a;
+            border: 1px solid #0066cc;
+            border-radius: 3px;
+            color: #e0e0e0;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        .page-input-inline::-webkit-outer-spin-button,
+        .page-input-inline::-webkit-inner-spin-button { -webkit-appearance: none; }
+        
+        .sep { width: 1px; height: 18px; background: #444; margin: 0 4px; }
+        
+        .copy-link-btn { position: relative; }
+        .copy-link-tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2e7d32;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .copy-link-tooltip.show { opacity: 1; }
+        
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: auto;
+            background: #1a1a1a;
+            position: relative;
+            touch-action: none;
+        }
+        .image-container.fit-height { align-items: center; }
+        .image-container.fit-height img { height: 100% !important; width: auto !important; max-width: 100%; object-fit: contain; }
+        .image-container.fit-width img { width: 100% !important; height: auto !important; object-fit: contain; }
+        
+        #page-image { display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.5); transition: transform 0.1s; }
+        
+        /* Navigation buttons on sides - UPDATED */
+        .side-nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 100px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: opacity 0.2s, background 0.2s;
+            border-radius: 0;
+        }
+        .side-nav-btn:hover {
+            opacity: 1;
+            background: rgba(0, 102, 204, 0.7);
+        }
+        .side-nav-btn.prev {
+            left: 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .side-nav-btn.next {
+            right: 0;
+            border-radius: 8px 0 0 8px;
+        }
+        
+        /* Touch navigation zones */
+        .nav-zone {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 25%;
+            cursor: pointer;
+            z-index: 50;
+            pointer-events: auto;
+        }
+        .nav-zone-left { left: 0; }
+        .nav-zone-right { right: 0; }
+        .nav-zone:hover { background: rgba(255,255,255,0.03); }
+        
+        /* Allow scroll through zones when zoomed */
+        .image-container.fit-height .nav-zone,
+        .image-container.fit-width .nav-zone { pointer-events: auto; }
+        
+        .image-container.panning { cursor: grab; }
+        .image-container.panning:active { cursor: grabbing; }
+        
+        .zoom-indicator {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            display: none;
+            z-index: 100;
+        }
+        
+        .image-container::-webkit-scrollbar { width: 5px; height: 5px; }
+        .image-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .image-container { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
+        
+        .no-toc { text-align: center; padding: 20px; color: #666; font-style: italic; font-size: 11px; }
+        
+        @media (max-width: 500px) {
+            .toc-sidebar { width: 260px; }
+            .toc-collapsed .toc-sidebar { transform: translateX(-260px); }
+            .controls { padding: 3px 6px; }
+            .controls-center { gap: 4px; }
+            button { padding: 4px 6px; min-width: 28px; height: 26px; font-size: 12px; }
+            .page-info { font-size: 11px; margin: 0 4px; }
+            #current-page { padding: 2px 4px; }
+            .side-nav-btn {
+                width: 40px;
+                height: 80px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="toc-collapsed">
+    <button class="toc-toggle-fixed" id="toc-toggle-fixed" title="Contents (T)">📖</button>
+
+    <div class="toc-sidebar">
+        <div class="toc-header">
+            <h2>Contents</h2>
+            <button class="toc-close" id="toc-close">×</button>
+        </div>
+        <div class="toc-content" id="toc-content"></div>
+    </div>
+
+    <!-- Side Navigation Buttons -->
+    <button class="side-nav-btn prev" id="side-prev" title="Previous Page">◀</button>
+    <button class="side-nav-btn next" id="side-next" title="Next Page">▶</button>
+
+    <div class="viewer">
+        <div class="controls">
+            <div class="controls-center">
+                <button id="nav-prev" title="Previous (←)">◀</button>
+                <button id="nav-next" title="Next (→)">▶</button>
+                
+                <span class="sep"></span>
+                
+                <button id="zoom-out" title="Zoom Out">−</button>
+                <button id="zoom-in" title="Zoom In">+</button>
+                
+                <span class="sep"></span>
+                
+                <button id="fit-height" title="Fit Height (H)" class="active">↕</button>
+                <button id="fit-width" title="Fit Width (W)">↔</button>
+                
+                <span class="page-info">
+                    <span id="current-page" title="Go to page">1</span>
+                    <span class="page-slash">/</span>
+                    <span id="total-pages">0</span>
+                </span>
+                
+                <span class="sep"></span>
+                
+                <button id="copy-link" class="copy-link-btn" title="Copy Link">📎<span class="copy-link-tooltip">Copied!</span></button>
+                <button id="fullscreen" title="Fullscreen (F)">⛶</button>
+            </div>
+        </div>
+
+        <div class="image-container" id="image-container">
+            <div class="nav-zone nav-zone-left" id="nav-zone-left"></div>
+            <img id="page-image" src="" alt="Page">
+            <div class="nav-zone nav-zone-right" id="nav-zone-right"></div>
+            <div class="zoom-indicator" id="zoom-indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        const config = {
+            pages: ["001.webp", "002.webp", "003.webp", "004.webp", "005.webp", "006.webp", "007.webp", "008.webp", "009.webp", "010.webp", "011.webp", "012.webp", "013.webp", "014.webp", "015.webp", "016.webp", "017.webp", "018.webp", "019.webp", "020.webp", "021.webp", "022.webp", "023.webp", "024.webp", "025.webp", "026.webp", "027.webp", "028.webp", "029.webp", "030.webp", "031.webp", "032.webp", "033.webp", "034.webp", "035.webp", "036.webp", "037.webp", "038.webp", "039.webp", "040.webp", "041.webp", "042.webp", "043.webp", "044.webp", "045.webp", "046.webp", "047.webp", "048.webp", "049.webp", "050.webp", "051.webp", "052.webp", "053.webp", "054.webp", "055.webp", "056.webp", "057.webp", "058.webp", "059.webp", "060.webp", "061.webp", "062.webp", "063.webp", "064.webp", "065.webp", "066.webp", "067.webp", "068.webp", "069.webp", "070.webp", "071.webp", "072.webp", "073.webp", "074.webp", "075.webp", "076.webp", "077.webp", "078.webp", "079.webp", "080.webp", "081.webp", "082.webp", "083.webp", "084.webp", "085.webp", "086.webp", "087.webp", "088.webp", "089.webp", "090.webp", "091.webp", "092.webp", "093.webp", "094.webp", "095.webp", "096.webp", "097.webp", "098.webp", "099.webp", "100.webp", "101.webp", "102.webp", "103.webp", "104.webp", "105.webp", "106.webp", "107.webp", "108.webp", "109.webp", "110.webp", "111.webp", "112.webp", "113.webp", "114.webp", "115.webp", "116.webp", "117.webp", "118.webp", "119.webp", "120.webp", "121.webp", "122.webp", "123.webp", "124.webp", "125.webp", "126.webp", "127.webp", "128.webp", "129.webp", "130.webp", "131.webp", "132.webp", "133.webp", "134.webp", "135.webp", "136.webp", "137.webp", "138.webp", "139.webp", "140.webp", "141.webp", "142.webp", "143.webp", "144.webp", "145.webp", "146.webp", "147.webp", "148.webp", "149.webp", "150.webp", "151.webp", "152.webp", "153.webp", "154.webp", "155.webp", "156.webp", "157.webp", "158.webp", "159.webp", "160.webp", "161.webp", "162.webp", "163.webp", "164.webp", "165.webp", "166.webp", "167.webp", "168.webp", "169.webp", "170.webp", "171.webp", "172.webp", "173.webp", "174.webp", "175.webp", "176.webp", "177.webp", "178.webp", "179.webp", "180.webp", "181.webp", "182.webp", "183.webp", "184.webp", "185.webp", "186.webp", "187.webp", "188.webp", "189.webp", "190.webp", "191.webp", "192.webp", "193.webp", "194.webp", "195.webp", "196.webp", "197.webp", "198.webp", "199.webp", "200.webp", "201.webp", "202.webp", "203.webp", "204.webp", "205.webp", "206.webp", "207.webp", "208.webp", "209.webp", "210.webp", "211.webp", "212.webp", "213.webp", "214.webp", "215.webp", "216.webp", "217.webp", "218.webp", "219.webp", "220.webp", "221.webp", "222.webp", "223.webp", "224.webp", "225.webp", "226.webp", "227.webp", "228.webp", "229.webp", "230.webp", "231.webp", "232.webp", "233.webp", "234.webp", "235.webp", "236.webp", "237.webp", "238.webp", "239.webp", "240.webp", "241.webp", "242.webp", "243.webp", "244.webp", "245.webp", "246.webp", "247.webp", "248.webp", "249.webp", "250.webp", "251.webp", "252.webp", "253.webp", "254.webp", "255.webp", "256.webp", "257.webp", "258.webp", "259.webp", "260.webp", "261.webp", "262.webp", "263.webp", "264.webp", "265.webp", "266.webp", "267.webp", "268.webp", "269.webp", "270.webp", "271.webp", "272.webp", "273.webp", "274.webp", "275.webp", "276.webp", "277.webp", "278.webp", "279.webp", "280.webp", "281.webp", "282.webp", "283.webp", "284.webp", "285.webp", "286.webp", "287.webp", "288.webp", "289.webp", "290.webp", "291.webp", "292.webp", "293.webp", "294.webp", "295.webp", "296.webp", "297.webp", "298.webp", "299.webp", "300.webp", "301.webp", "302.webp", "303.webp", "304.webp", "305.webp", "306.webp", "307.webp", "308.webp", "309.webp", "310.webp", "311.webp", "312.webp", "313.webp", "314.webp", "315.webp", "316.webp", "317.webp", "318.webp", "319.webp", "320.webp", "321.webp", "322.webp", "323.webp", "324.webp", "325.webp", "326.webp", "327.webp", "328.webp", "329.webp", "330.webp", "331.webp", "332.webp", "333.webp", "334.webp", "335.webp", "336.webp", "337.webp", "338.webp", "339.webp", "340.webp", "341.webp", "342.webp", "343.webp", "344.webp", "345.webp", "346.webp", "347.webp", "348.webp", "349.webp", "350.webp", "351.webp", "352.webp", "353.webp", "354.webp", "355.webp", "356.webp", "357.webp", "358.webp", "359.webp", "360.webp", "361.webp", "362.webp", "363.webp", "364.webp", "365.webp", "366.webp", "367.webp", "368.webp", "369.webp", "370.webp", "371.webp", "372.webp", "373.webp", "374.webp", "375.webp", "376.webp", "377.webp", "378.webp", "379.webp", "380.webp", "381.webp", "382.webp", "383.webp", "384.webp", "385.webp", "386.webp", "387.webp", "388.webp", "389.webp", "390.webp", "391.webp", "392.webp", "393.webp", "394.webp", "395.webp", "396.webp", "397.webp", "398.webp", "399.webp", "400.webp", "401.webp", "402.webp", "403.webp", "404.webp", "405.webp", "406.webp", "407.webp", "408.webp", "409.webp", "410.webp", "411.webp", "412.webp", "413.webp", "414.webp", "415.webp", "416.webp", "417.webp", "418.webp", "419.webp", "420.webp", "421.webp", "422.webp", "423.webp", "424.webp", "425.webp", "426.webp", "427.webp", "428.webp", "429.webp", "430.webp", "431.webp", "432.webp", "433.webp", "434.webp", "435.webp", "436.webp", "437.webp", "438.webp", "439.webp", "440.webp", "441.webp", "442.webp", "443.webp", "444.webp", "445.webp", "446.webp", "447.webp", "448.webp", "449.webp", "450.webp", "451.webp", "452.webp", "453.webp", "454.webp", "455.webp", "456.webp", "457.webp", "458.webp", "459.webp", "460.webp", "461.webp", "462.webp", "463.webp", "464.webp", "465.webp", "466.webp", "467.webp", "468.webp", "469.webp", "470.webp", "471.webp", "472.webp", "473.webp", "474.webp", "475.webp", "476.webp", "477.webp", "478.webp", "479.webp", "480.webp", "481.webp", "482.webp", "483.webp", "484.webp", "485.webp", "486.webp", "487.webp", "488.webp", "489.webp", "490.webp", "491.webp", "492.webp", "493.webp", "494.webp", "495.webp", "496.webp", "497.webp", "498.webp", "499.webp", "500.webp", "501.webp", "502.webp", "503.webp", "504.webp", "505.webp", "506.webp", "507.webp", "508.webp", "509.webp", "510.webp", "511.webp", "512.webp", "513.webp", "514.webp", "515.webp", "516.webp", "517.webp", "518.webp", "519.webp", "520.webp", "521.webp", "522.webp", "523.webp", "524.webp", "525.webp", "526.webp", "527.webp", "528.webp", "529.webp", "530.webp", "531.webp", "532.webp", "533.webp", "534.webp", "535.webp", "536.webp", "537.webp", "538.webp", "539.webp", "540.webp", "541.webp", "542.webp", "543.webp", "544.webp", "545.webp", "546.webp", "547.webp", "548.webp", "549.webp", "550.webp", "551.webp", "552.webp", "553.webp", "554.webp", "555.webp", "556.webp", "557.webp", "558.webp", "559.webp", "560.webp", "561.webp", "562.webp", "563.webp", "564.webp", "565.webp", "566.webp", "567.webp", "568.webp", "569.webp", "570.webp", "571.webp", "572.webp", "573.webp", "574.webp", "575.webp", "576.webp", "577.webp", "578.webp", "579.webp", "580.webp", "581.webp", "582.webp", "583.webp", "584.webp", "585.webp", "586.webp", "587.webp", "588.webp", "589.webp", "590.webp", "591.webp", "592.webp", "593.webp", "594.webp", "595.webp", "596.webp", "597.webp", "598.webp", "599.webp", "600.webp", "601.webp", "602.webp", "603.webp", "604.webp", "605.webp", "606.webp", "607.webp", "608.webp", "609.webp", "610.webp", "611.webp", "612.webp", "613.webp", "614.webp", "615.webp", "616.webp", "617.webp", "618.webp", "619.webp", "620.webp", "621.webp", "622.webp"],
+            imgBase: "pages",
+            toc: {"chapters": [{"code": "COVER", "title": "Cover & Title Pages", "start": 1, "end": 4, "sections": []}, {"code": "TOC", "title": "Table of Contents", "start": 5, "end": 8, "sections": []}, {"code": "PREFACE", "title": "Preface / Introduction", "start": 9, "end": 12, "sections": []}, {"code": "01", "title": "The Nature of Science", "start": 13, "end": 32, "sections": [{"code": "1.1", "title": "The nature of scientific knowledge", "start": 14, "end": 16}, {"code": "1.2", "title": "Measurement and units", "start": 16, "end": 17}, {"code": "1.3", "title": "Error in measurements", "start": 17, "end": 20}, {"code": "1.4", "title": "Basic units and derived units", "start": 20, "end": 23}, {"code": "1.5", "title": "Scientific notation", "start": 23, "end": 26}, {"code": "1.6", "title": "Unit analysis", "start": 26, "end": 28}]}, {"code": "02", "title": "Reflection of Light", "start": 33, "end": 52, "sections": [{"code": "2.1", "title": "Understanding the nature of light", "start": 34, "end": 35}, {"code": "2.2", "title": "Vision and light", "start": 35, "end": 36}, {"code": "2.3", "title": "Types of reflection", "start": 36, "end": 37}, {"code": "2.4", "title": "The laws of reflection of light", "start": 37, "end": 38}, {"code": "2.5", "title": "The image produced in a plane mirror", "start": 38, "end": 40}, {"code": "2.6", "title": "Uses of mirrors in technological and medical contexts", "start": 40, "end": 42}]}, {"code": "03", "title": "Refraction of Light", "start": 53, "end": 72, "sections": [{"code": "3.1", "title": "What is refraction of light?", "start": 54, "end": 57}, {"code": "3.2", "title": "The laws of refraction of light and refractive index", "start": 57, "end": 62}, {"code": "3.3", "title": "Refractive index in terms of relative speeds", "start": 62, "end": 63}, {"code": "3.4", "title": "Critical angle and total internal reflection", "start": 63, "end": 65}, {"code": "3.5", "title": "Relationship between refractive index and critical angle", "start": 65, "end": 67}, {"code": "3.6", "title": "Applications of total internal reflection", "start": 67, "end": 70}]}, {"code": "04", "title": "Lenses", "start": 73, "end": 92, "sections": [{"code": "4.1", "title": "Converging and diverging lenses", "start": 74, "end": 76}, {"code": "4.2", "title": "How an image is formed in a converging lens", "start": 76, "end": 79}, {"code": "4.3", "title": "Formula for a converging lens", "start": 79, "end": 82}, {"code": "4.4", "title": "How an image is formed by a diverging lens", "start": 82, "end": 84}, {"code": "4.5", "title": "Formula for a diverging lens", "start": 84, "end": 86}, {"code": "4.6", "title": "Uses of lenses in technological and medical contexts", "start": 86, "end": 89}, {"code": "4.7", "title": "Models in physics", "start": 89, "end": 90}]}, {"code": "05", "title": "Speed, Displacement and Velocity", "start": 93, "end": 112, "sections": [{"code": "5.1", "title": "Time", "start": 94, "end": 95}, {"code": "5.2", "title": "Distance", "start": 95, "end": 96}, {"code": "5.3", "title": "Speed", "start": 96, "end": 98}, {"code": "5.4", "title": "Displacement", "start": 98, "end": 99}, {"code": "5.5", "title": "Velocity", "start": 99, "end": 101}, {"code": "5.6", "title": "Measuring velocity in the laboratory", "start": 101, "end": 105}, {"code": "5.7", "title": "Displacement-time graphs", "start": 105, "end": 110}]}, {"code": "06", "title": "Acceleration", "start": 113, "end": 132, "sections": [{"code": "6.1", "title": "Acceleration", "start": 114, "end": 116}, {"code": "6.2", "title": "Constant (uniform) acceleration", "start": 116, "end": 119}, {"code": "6.3", "title": "Velocity-time graphs", "start": 119, "end": 124}, {"code": "6.4", "title": "Measuring constant acceleration", "start": 124, "end": 128}, {"code": "6.5", "title": "Acceleration due to gravity, g", "start": 128, "end": 130}]}, {"code": "07", "title": "Vectors and Scalars", "start": 133, "end": 152, "sections": [{"code": "7.1", "title": "Physical quantities", "start": 134, "end": 136}, {"code": "7.2", "title": "Vectors in two dimensions", "start": 136, "end": 142}, {"code": "7.3", "title": "Resolving a vector into perpendicular components", "start": 142, "end": 146}]}, {"code": "08", "title": "Force, Mass and Momentum", "start": 153, "end": 172, "sections": [{"code": "8.1", "title": "Force", "start": 154, "end": 157}, {"code": "8.2", "title": "Mass", "start": 157, "end": 159}, {"code": "8.3", "title": "The newton", "start": 159, "end": 162}, {"code": "8.4", "title": "Weight and mass", "start": 162, "end": 167}, {"code": "8.5", "title": "Momentum and Newton's laws of motion", "start": 167, "end": 175}, {"code": "8.6", "title": "Projectiles", "start": 175, "end": 175}, {"code": "8.7", "title": "The principle of conservation of momentum", "start": 180, "end": 186}, {"code": "8.8", "title": "Collisions in two dimensions", "start": 186, "end": 190}]}, {"code": "09", "title": "Density, Pressure and Gravity", "start": 173, "end": 192, "sections": [{"code": "9.1", "title": "Density", "start": 174, "end": 177}, {"code": "9.2", "title": "Pressure", "start": 177, "end": 180}, {"code": "9.3", "title": "Pressure due to a liquid", "start": 180, "end": 183}, {"code": "9.4", "title": "The buoyancy force on an object immersed in a liquid", "start": 183, "end": 185}, {"code": "9.5", "title": "Pressure in gases and atmospheric pressure", "start": 185, "end": 190}, {"code": "9.6", "title": "Gravity - the cement of the universe", "start": 190, "end": 192}, {"code": "9.7", "title": "Gravity and weight", "start": 192, "end": 195}, {"code": "9.8", "title": "Gravitational fields", "start": 195, "end": 198}, {"code": "9.9", "title": "Escape velocity", "start": 198, "end": 200}]}, {"code": "10", "title": "Work, Energy and Power", "start": 193, "end": 212, "sections": [{"code": "10.1", "title": "Work", "start": 194, "end": 197}, {"code": "10.2", "title": "Energy", "start": 197, "end": 199}, {"code": "10.3", "title": "Principle of conservation of energy", "start": 199, "end": 201}, {"code": "10.4", "title": "Kinetic energy", "start": 201, "end": 204}, {"code": "10.5", "title": "Potential energy", "start": 204, "end": 210}, {"code": "10.6", "title": "Renewable and non-renewable sources of energy", "start": 210, "end": 213}, {"code": "10.7", "title": "Power", "start": 213, "end": 216}, {"code": "10.8", "title": "Efficiency", "start": 216, "end": 219}]}, {"code": "11", "title": "Circular Motion", "start": 213, "end": 232, "sections": [{"code": "11.1", "title": "Particle moving in a circle", "start": 214, "end": 217}, {"code": "11.2", "title": "Centripetal force", "start": 217, "end": 223}, {"code": "11.3", "title": "Circular satellite orbits", "start": 223, "end": 228}, {"code": "11.4", "title": "Near-Earth and geostationary orbits", "start": 228, "end": 230}]}, {"code": "12", "title": "Elasticity and Hooke's Law", "start": 233, "end": 252, "sections": [{"code": "12.1", "title": "Elasticity", "start": 234, "end": 236}, {"code": "12.2", "title": "Hooke's law", "start": 236, "end": 240}, {"code": "12.3", "title": "Work done in stretching or compressing", "start": 240, "end": 243}, {"code": "12.4", "title": "Energy changes in an oscillating body that obeys Hooke's law", "start": 243, "end": 246}]}, {"code": "13", "title": "Temperature and Thermometers", "start": 253, "end": 272, "sections": [{"code": "13.1", "title": "Concept of temperature", "start": 254, "end": 257}, {"code": "13.2", "title": "Thermometric properties", "start": 257, "end": 260}]}, {"code": "14", "title": "Heat Transfer and Temperature Change", "start": 273, "end": 292, "sections": [{"code": "14.1", "title": "The states of matter", "start": 274, "end": 277}, {"code": "14.2", "title": "Heat capacity", "start": 277, "end": 279}, {"code": "14.3", "title": "Specific heat capacity", "start": 279, "end": 284}, {"code": "14.4", "title": "Latent heat", "start": 284, "end": 287}, {"code": "14.5", "title": "Specific latent heat", "start": 287, "end": 291}, {"code": "14.6", "title": "The heat pump", "start": 291, "end": 293}, {"code": "14.7", "title": "Heat transfer", "start": 293, "end": 296}]}, {"code": "15", "title": "Waves and Wave Motion", "start": 293, "end": 312, "sections": [{"code": "15.1", "title": "Travelling waves", "start": 294, "end": 297}, {"code": "15.2", "title": "Waves are a means of transferring energy from one place to another", "start": 297, "end": 299}, {"code": "15.3", "title": "Transverse and longitudinal waves", "start": 299, "end": 302}, {"code": "15.4", "title": "The relationship v = f\u03bb", "start": 302, "end": 305}, {"code": "15.5", "title": "Wave behaviour", "start": 305, "end": 310}, {"code": "15.6", "title": "Stationary waves", "start": 310, "end": 313}, {"code": "15.7", "title": "The Doppler effect", "start": 313, "end": 317}]}, {"code": "16", "title": "Vibrations and Sound", "start": 313, "end": 332, "sections": [{"code": "16.1", "title": "Every source of sound is a vibrating object", "start": 314, "end": 316}, {"code": "16.2", "title": "Sound travels as a mechanical wave", "start": 316, "end": 318}, {"code": "16.3", "title": "How a vibrating object produces a sound wave", "start": 318, "end": 321}, {"code": "16.4", "title": "The speed of sound", "start": 321, "end": 324}, {"code": "16.5", "title": "Characteristics of sounds", "start": 324, "end": 327}, {"code": "16.6", "title": "Frequency limits of audibility and ultrasound", "start": 327, "end": 329}, {"code": "16.7", "title": "Resonance", "start": 329, "end": 332}, {"code": "16.8", "title": "Standing waves on a stretched string", "start": 332, "end": 337}, {"code": "16.9", "title": "The sonometer", "start": 337, "end": 340}]}, {"code": "17", "title": "The Wave Nature of Light", "start": 333, "end": 352, "sections": [{"code": "17.1", "title": "The wave nature of light", "start": 334, "end": 338}, {"code": "17.2", "title": "Wavelength and colour", "start": 338, "end": 341}, {"code": "17.3", "title": "Diffraction grating", "start": 341, "end": 341}, {"code": "17.4", "title": "Polarisation of light", "start": 346, "end": 349}, {"code": "17.5", "title": "Dispersion", "start": 349, "end": 352}, {"code": "17.6", "title": "The electromagnetic spectrum", "start": 352, "end": 356}, {"code": "17.7", "title": "Solar irradiance", "start": 356, "end": 358}]}, {"code": "18", "title": "Static Electricity", "start": 353, "end": 372, "sections": [{"code": "18.1", "title": "Static electricity", "start": 354, "end": 357}, {"code": "18.2", "title": "Charging objects by friction", "start": 357, "end": 359}, {"code": "18.3", "title": "Atomic nature of electric charge", "start": 359, "end": 361}, {"code": "18.4", "title": "Conductors and insulators", "start": 361, "end": 363}, {"code": "18.5", "title": "Charging objects by induction", "start": 363, "end": 365}, {"code": "18.6", "title": "The gold leaf electroscope", "start": 365, "end": 368}, {"code": "18.7", "title": "The distribution of charge on an insulated conductor", "start": 368, "end": 370}, {"code": "18.8", "title": "The size of the force between two static electric charges", "start": 370, "end": 375}, {"code": "18.9", "title": "Electric fields", "start": 375, "end": 378}, {"code": "18.10", "title": "Electric field strength", "start": 378, "end": 381}]}, {"code": "19", "title": "Potential Difference", "start": 373, "end": 392, "sections": [{"code": "19.1", "title": "Potential difference", "start": 374, "end": 377}, {"code": "19.2", "title": "Relationship between potential difference and electric field strength", "start": 377, "end": 381}]}, {"code": "20", "title": "Current and Charge", "start": 393, "end": 412, "sections": [{"code": "20.1", "title": "Three effects of an electric current", "start": 394, "end": 397}, {"code": "20.2", "title": "What is electric charge?", "start": 397, "end": 400}, {"code": "20.3", "title": "Size of an electric current", "start": 400, "end": 403}, {"code": "20.4", "title": "Conventional current", "start": 403, "end": 405}, {"code": "20.5", "title": "Direct current (DC) and alternating current (AC)", "start": 405, "end": 407}, {"code": "20.6", "title": "Series and parallel circuits", "start": 407, "end": 410}]}, {"code": "21", "title": "Potential Difference and Electromotive Force", "start": 413, "end": 432, "sections": [{"code": "21.1", "title": "Energy changes in a simple electric circuit", "start": 414, "end": 417}, {"code": "21.2", "title": "Potential difference between two points in a circuit", "start": 417, "end": 420}, {"code": "21.3", "title": "The rate at which heat is produced in a current-carrying conductor", "start": 420, "end": 423}, {"code": "21.4", "title": "Voltages in series and parallel", "start": 423, "end": 426}, {"code": "21.5", "title": "Electromotive force (emf)", "start": 426, "end": 429}]}, {"code": "22", "title": "Resistance", "start": 433, "end": 452, "sections": [{"code": "22.1", "title": "Resistance", "start": 434, "end": 437}, {"code": "22.2", "title": "Measuring resistance", "start": 437, "end": 439}, {"code": "22.3", "title": "Circuit diagrams and circuit symbols", "start": 439, "end": 442}, {"code": "22.4", "title": "Ohm's law", "start": 442, "end": 445}, {"code": "22.5", "title": "Resistors in series and parallel", "start": 445, "end": 451}, {"code": "22.6", "title": "Variation of the resistance of a conductor with temperature", "start": 451, "end": 455}, {"code": "22.7", "title": "Resistivity", "start": 455, "end": 459}, {"code": "22.8", "title": "The potential divider circuit", "start": 459, "end": 462}]}, {"code": "23", "title": "Heating Effect of an Electric Current", "start": 453, "end": 472, "sections": [{"code": "23.1", "title": "The heating effect of an electric current", "start": 454, "end": 457}, {"code": "23.2", "title": "How heat affects the current-voltage relationship of a conductor", "start": 457, "end": 461}, {"code": "23.3", "title": "Advantage of high voltage in the transmission of electrical energy", "start": 461, "end": 464}, {"code": "23.4", "title": "Domestic electric circuits", "start": 464, "end": 467}]}, {"code": "24", "title": "Semiconductors", "start": 473, "end": 492, "sections": [{"code": "24.1", "title": "Semiconductors", "start": 474, "end": 477}, {"code": "24.2", "title": "Conduction in semiconductors", "start": 477, "end": 481}, {"code": "24.3", "title": "The p-n junction", "start": 481, "end": 485}, {"code": "24.4", "title": "The light-emitting diode (LED)", "start": 485, "end": 488}, {"code": "24.5", "title": "The transistor", "start": 488, "end": 491}, {"code": "24.6", "title": "The transistor as a switch", "start": 491, "end": 494}, {"code": "24.7", "title": "Real-world applications of semiconductors", "start": 494, "end": 497}]}, {"code": "25", "title": "Magnets and Magnetic Fields", "start": 493, "end": 512, "sections": [{"code": "25.1", "title": "Basic properties of magnets", "start": 494, "end": 497}, {"code": "25.2", "title": "Magnetic fields", "start": 497, "end": 497}, {"code": "25.3", "title": "The magnetic effect of an electric current", "start": 501, "end": 505}, {"code": "25.4", "title": "Magnetic field due to current in a circular loop and due to current in a coil", "start": 505, "end": 508}, {"code": "25.5", "title": "Magnetic field due to current in a solenoid", "start": 508, "end": 511}, {"code": "25.6", "title": "Uses of permanent and temporary magnets", "start": 511, "end": 514}]}, {"code": "26", "title": "Current in a Magnetic Field", "start": 513, "end": 532, "sections": [{"code": "26.1", "title": "Force on a current-carrying conductor in a magnetic field", "start": 514, "end": 518}, {"code": "26.2", "title": "Magnetic flux density", "start": 518, "end": 522}, {"code": "26.3", "title": "Force on a current-carrying coil in a magnetic field", "start": 522, "end": 526}, {"code": "26.4", "title": "Force exerted by a magnetic field on a moving charge", "start": 526, "end": 530}, {"code": "26.5", "title": "The magnetic force between two current-carrying conductors", "start": 530, "end": 534}]}, {"code": "27", "title": "Electromagnetic Induction", "start": 533, "end": 552, "sections": [{"code": "27.1", "title": "Electromagnetic induction: The generator effect", "start": 534, "end": 537}, {"code": "27.2", "title": "Magnetic flux", "start": 537, "end": 540}, {"code": "27.3", "title": "Faraday's law of electromagnetic induction", "start": 540, "end": 545}, {"code": "27.4", "title": "Lenz's law of electromagnetic induction", "start": 545, "end": 550}, {"code": "27.5", "title": "Changing mechanical energy to electrical energy - generators", "start": 550, "end": 554}, {"code": "27.6", "title": "Alternating current", "start": 554, "end": 557}, {"code": "27.7", "title": "Mutual inductance", "start": 557, "end": 560}, {"code": "27.8", "title": "Transformers", "start": 560, "end": 565}, {"code": "27.9", "title": "Powering the country: Generating electricity", "start": 565, "end": 568}]}, {"code": "28", "title": "The Electron", "start": 553, "end": 572, "sections": [{"code": "28.1", "title": "Properties of the electron", "start": 554, "end": 557}, {"code": "28.2", "title": "Thermionic emission", "start": 557, "end": 560}, {"code": "28.3", "title": "The cathode ray tube", "start": 560, "end": 563}, {"code": "28.4", "title": "Deflection of a beam of electrons in an electric field", "start": 563, "end": 567}, {"code": "28.5", "title": "Deflection of a beam of electrons in a magnetic field", "start": 567, "end": 571}, {"code": "28.6", "title": "The photoelectric effect", "start": 571, "end": 574}, {"code": "28.7", "title": "The photocell", "start": 574, "end": 577}, {"code": "28.8", "title": "The particle model of light is needed to explain the photoelectric effect", "start": 577, "end": 581}, {"code": "28.9", "title": "Einstein's photoelectric law", "start": 581, "end": 585}, {"code": "28.10", "title": "Real-life applications of photoelectric effect", "start": 585, "end": 588}, {"code": "28.11", "title": "X-rays", "start": 588, "end": 591}, {"code": "28.12", "title": "Comparing X-ray production and the photoelectric effect", "start": 591, "end": 594}]}, {"code": "29", "title": "The Atom, the Nucleus and Radioactivity", "start": 573, "end": 592, "sections": [{"code": "29.1", "title": "Atoms", "start": 574, "end": 577}, {"code": "29.2", "title": "Emission spectra", "start": 577, "end": 580}, {"code": "29.3", "title": "The Bohr model of the atom", "start": 580, "end": 580}, {"code": "29.4", "title": "Spectroscopy and our understanding of the universe", "start": 584, "end": 587}, {"code": "29.5", "title": "Structure of the nucleus", "start": 587, "end": 590}, {"code": "29.6", "title": "Radioactivity", "start": 590, "end": 593}, {"code": "29.7", "title": "The nature of \u03b1, \u03b2 and \u03b3 radiation", "start": 593, "end": 597}, {"code": "29.8", "title": "The law of radioactive decay", "start": 597, "end": 602}, {"code": "29.9", "title": "Detecting nuclear radiation", "start": 602, "end": 605}, {"code": "29.10", "title": "Safety implications of radioactive emissions", "start": 605, "end": 608}]}, {"code": "30", "title": "Fission, Fusion and Nuclear Energy", "start": 593, "end": 612, "sections": [{"code": "30.1", "title": "Nuclear fission", "start": 594, "end": 598}, {"code": "30.2", "title": "The atomic bomb (an uncontrolled fission reaction)", "start": 598, "end": 601}, {"code": "30.3", "title": "Nuclear reactors (a controlled fission reaction)", "start": 601, "end": 605}, {"code": "30.4", "title": "Nuclear fusion", "start": 605, "end": 608}, {"code": "30.5", "title": "The equivalence of mass and energy", "start": 608, "end": 612}, {"code": "30.6", "title": "Mass defect, binding energy and nuclear stability", "start": 612, "end": 616}]}, {"code": "31", "title": "Particle Physics", "start": 613, "end": 632, "sections": [{"code": "31.1", "title": "Conservation of energy and momentum in nuclear reactions revisited", "start": 614, "end": 618}, {"code": "31.2", "title": "The first splitting of a nucleus by artificially accelerated particles", "start": 618, "end": 622}, {"code": "31.3", "title": "The discovery of antiparticles", "start": 622, "end": 626}, {"code": "31.4", "title": "Particle accelerators", "start": 626, "end": 630}, {"code": "31.5", "title": "The fundamental forces of nature", "start": 630, "end": 634}, {"code": "31.6", "title": "Classification of the particles: leptons and hadrons", "start": 634, "end": 638}, {"code": "31.7", "title": "The standard model of particle physics", "start": 638, "end": 642}]}, {"code": "INDEX", "title": "Index", "start": 633, "end": 636, "sections": []}, {"code": "BACKCOVER", "title": "End Pages / Credits", "start": 637, "end": 637, "sections": []}]},
+            pageOffset: 0,
+            currentPage: 0,
+            zoom: 1.0,
+            isPanning: false,
+            spaceHeld: false,
+            startX: 0, startY: 0,
+            panStartX: 0, panStartY: 0,
+            translateX: 0, translateY: 0,
+            baseImgWidth: 0, baseImgHeight: 0,
+            currentFitMode: localStorage.getItem('fitMode') || 'height',
+            expandedChapters: JSON.parse(localStorage.getItem('expandedChapters') || '{}')
+        };
+        
+        const $ = id => document.getElementById(id);
+        const pageImage = $('page-image');
+        const imageContainer = $('image-container');
+        const zoomIndicator = $('zoom-indicator');
+        
+        function init() {
+            const lastDisplayNum = config.pages.length - config.pageOffset;
+            $('total-pages').textContent = lastDisplayNum;
+            loadPage(config.currentPage);
+            renderTOC();
+            setupEvents();
+            const s = localStorage.getItem('currentPage');
+            if (s) { const n = parseInt(s); if (n >= 0 && n < config.pages.length) loadPage(n); }
+            setFitMode('height');
+            if (localStorage.getItem('tocVisible') === 'true') toggleTOC(true);
+            if (config.toc.chapters?.length) setTimeout(() => toggleTOC(true), 100);
+        }
+        
+        function toggleTOC(show) {
+            if (show === undefined) show = document.body.classList.contains('toc-collapsed');
+            document.body.classList.toggle('toc-collapsed', !show);
+            localStorage.setItem('tocVisible', show);
+        }
+        
+        function setFitMode(mode) {
+            config.currentFitMode = mode;
+            imageContainer.classList.remove('fit-height', 'fit-width');
+            imageContainer.classList.add('fit-' + mode);
+            $('fit-height').classList.toggle('active', mode === 'height');
+            $('fit-width').classList.toggle('active', mode === 'width');
+            config.zoom = 1; config.translateX = config.translateY = 0;
+            updateTransform();
+            localStorage.setItem('fitMode', mode);
+        }
+        
+        function loadPage(idx) {
+            if (idx < 0 || idx >= config.pages.length) return;
+            config.currentPage = idx;
+            pageImage.src = config.imgBase ? `${config.imgBase}/${config.pages[idx]}` : config.pages[idx];
+            const displayNum = (idx + 1) - config.pageOffset;
+            $('current-page').textContent = displayNum;
+            config.zoom = 1; config.translateX = config.translateY = 0;
+            updateTransform();
+            imageContainer.scrollTop = imageContainer.scrollLeft = 0;
+            updateActiveTOC();
+            localStorage.setItem('currentPage', idx);
+        }
+        
+        pageImage.onload = () => { config.baseImgWidth = pageImage.offsetWidth; config.baseImgHeight = pageImage.offsetHeight; };
+        
+        function renderTOC() {
+            const c = $('toc-content');
+            if (!config.toc.chapters?.length) { c.innerHTML = '<div class="no-toc">No contents</div>'; return; }
+            let h = '';
+            config.toc.chapters.forEach((ch, i) => {
+                const exp = config.expandedChapters[i] === true;
+                h += `<div class="toc-chapter ${exp?'expanded':''}" data-index="${i}">
+                    <div class="toc-chapter-header">
+                        <span class="chapter-expand ${exp?'expanded':''}">▶</span>
+                        <div class="chapter-number">${ch.code||''}</div>
+                        <div class="toc-chapter-title" data-start="${ch.start-1}">${ch.title}</div>
+                    </div><div class="toc-sections">`;
+                (ch.sections||[]).forEach(s => {
+                    h += `<div class="toc-section" data-start="${s.start-1}"><div class="section-number">${s.code||''}</div><div>${s.title}</div></div>`;
+                });
+                h += '</div></div>';
+            });
+            c.innerHTML = h;
+            c.querySelectorAll('.toc-chapter-header').forEach(el => {
+                el.onclick = e => {
+                    const ch = el.parentElement, idx = +ch.dataset.index;
+                    if (e.target.classList.contains('chapter-expand') || e.target.classList.contains('chapter-number')) {
+                        ch.classList.toggle('expanded');
+                        el.querySelector('.chapter-expand').classList.toggle('expanded');
+                        config.expandedChapters[idx] = ch.classList.contains('expanded');
+                        localStorage.setItem('expandedChapters', JSON.stringify(config.expandedChapters));
+                    } else {
+                        const st = +el.querySelector('.toc-chapter-title').dataset.start;
+                        if (!isNaN(st)) { loadPage(st); toggleTOC(false); }
+                    }
+                };
+            });
+            c.querySelectorAll('.toc-section').forEach(el => {
+                el.onclick = () => { const st = +el.dataset.start; if (!isNaN(st)) { loadPage(st); toggleTOC(false); } };
+            });
+        }
+        
+        function updateActiveTOC() {
+            document.querySelectorAll('.toc-section').forEach(el => el.classList.remove('active'));
+            let active = null, minD = Infinity;
+            document.querySelectorAll('.toc-section').forEach(el => {
+                const st = +el.dataset.start;
+                if (!isNaN(st) && config.currentPage >= st && config.currentPage - st < minD) { minD = config.currentPage - st; active = el; }
+            });
+            if (active) { active.classList.add('active'); setTimeout(() => active.scrollIntoView({ block: 'center', behavior: 'smooth' }), 100); }
+        }
+        
+        function updateTransform() {
+            pageImage.style.transform = `translate(${config.translateX}px,${config.translateY}px) scale(${config.zoom})`;
+            const pct = Math.round(config.zoom * 100) + '%';
+            zoomIndicator.textContent = pct;
+            if (config.zoom !== 1) {
+                zoomIndicator.style.display = 'block';
+            } else {
+                zoomIndicator.style.display = 'none';
+            }
+        }
+        
+        // Function to pan image when zoomed
+        function panImage(dx, dy) {
+            if (config.zoom > 1) {
+                config.translateX += dx;
+                config.translateY += dy;
+                updateTransform();
+                return true; // Image was panned
+            }
+            return false; // Image was not panned (not zoomed)
+        }
+        
+        function showPageInput() {
+            const inp = document.createElement('input');
+            inp.type = 'text'; inp.inputMode = 'numeric';
+            inp.className = 'page-input-inline';
+            inp.value = (config.currentPage + 1) - config.pageOffset;
+            inp.onkeydown = e => { if (e.key === 'Enter') submitPage(inp); else if (e.key === 'Escape') hidePage(inp); };
+            inp.onblur = () => submitPage(inp);
+            const span = $('current-page');
+            span.style.display = 'none';
+            span.parentNode.insertBefore(inp, span);
+            inp.focus(); inp.select();
+        }
+        function hidePage(inp) { $('current-page').style.display = ''; inp?.remove(); }
+        function submitPage(inp) {
+            const displayNum = parseInt(inp.value);
+            const idx = displayNum + config.pageOffset - 1;
+            if (idx >= 0 && idx < config.pages.length) loadPage(idx);
+            hidePage(inp);
+        }
+        
+        function copyLink() {
+            const displayNum = (config.currentPage + 1) - config.pageOffset;
+            const url = new URL(location.href); url.hash = `#page=${displayNum}`;
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                $('copy-link').classList.add('copied');
+                document.querySelector('.copy-link-tooltip').classList.add('show');
+                setTimeout(() => { $('copy-link').classList.remove('copied'); document.querySelector('.copy-link-tooltip').classList.remove('show'); }, 1200);
+            });
+        }
+        
+        function toggleFS() {
+            const d = document, e = document.documentElement;
+            if (!d.fullscreenElement && !d.webkitFullscreenElement) (e.requestFullscreen || e.webkitRequestFullscreen).call(e);
+            else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+        }
+        
+        function setupEvents() {
+            $('toc-toggle-fixed').onclick = () => toggleTOC();
+            $('toc-close').onclick = () => toggleTOC(false);
+            $('fit-height').onclick = () => setFitMode('height');
+            $('fit-width').onclick = () => setFitMode('width');
+            $('zoom-in').onclick = () => { config.zoom = Math.min(5, config.zoom + 0.15); updateTransform(); };
+            $('zoom-out').onclick = () => { config.zoom = Math.max(0.2, config.zoom - 0.15); updateTransform(); };
+            $('copy-link').onclick = copyLink;
+            $('fullscreen').onclick = toggleFS;
+            $('current-page').onclick = showPageInput;
+            $('nav-prev').onclick = () => loadPage(config.currentPage - 1);
+            $('nav-next').onclick = () => loadPage(config.currentPage + 1);
+            
+            // Side navigation buttons - when zoomed, pan image; when not zoomed, change page
+            $('side-prev').onclick = (e) => {
+                if (!panImage(50, 0)) { // Try to pan right
+                    loadPage(config.currentPage - 1); // If not zoomed, change page
+                }
+            };
+            $('side-next').onclick = (e) => {
+                if (!panImage(-50, 0)) { // Try to pan left
+                    loadPage(config.currentPage + 1); // If not zoomed, change page
+                }
+            };
+            
+            // Arrow keys for panning when zoomed
+            window.addEventListener('keydown', e => {
+                if (e.target.tagName === 'INPUT') return;
+                
+                // Arrow keys for panning when zoomed
+                if (config.zoom > 1) {
+                    let panned = false;
+                    if (e.key === 'ArrowLeft') { 
+                        panned = panImage(30, 0);
+                        if (panned) e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowRight') { 
+                        panned = panImage(-30, 0);
+                        if (panned) e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowUp') { 
+                        panned = panImage(0, 30);
+                        if (panned) e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowDown') { 
+                        panned = panImage(0, -30);
+                        if (panned) e.preventDefault();
+                    }
+                    
+                    // If we panned, don't do page navigation
+                    if (panned) return;
+                }
+                
+                if (e.code === 'Space' && !config.spaceHeld) {
+                    config.spaceHeld = true;
+                    imageContainer.classList.add('panning');
+                    e.preventDefault();
+                    return;
+                }
+                
+                // Arrow keys for page navigation when not zoomed
+                if (!(config.zoom > 1)) {
+                    if (e.key === 'ArrowLeft') { e.preventDefault(); loadPage(config.currentPage - 1); }
+                    else if (e.key === 'ArrowRight') { e.preventDefault(); loadPage(config.currentPage + 1); }
+                }
+                
+                if (e.key === 'h' || e.key === 'H') setFitMode('height');
+                else if (e.key === 'w' || e.key === 'W') setFitMode('width');
+                else if (e.key === 't' || e.key === 'T') toggleTOC();
+                else if (e.key === 'f' || e.key === 'F') toggleFS();
+            });
+            
+            window.addEventListener('keyup', e => {
+                if (e.code === 'Space') {
+                    config.spaceHeld = false;
+                    config.isPanning = false;
+                    imageContainer.classList.remove('panning');
+                }
+            });
+            
+            // Drag to pan (spacebar + drag)
+            imageContainer.addEventListener('mousedown', e => {
+                if (config.spaceHeld) {
+                    config.isPanning = true;
+                    config.startX = e.clientX;
+                    config.startY = e.clientY;
+                    config.panStartX = config.translateX;
+                    config.panStartY = config.translateY;
+                    e.preventDefault();
+                }
+            });
+            
+            window.addEventListener('mousemove', e => {
+                if (!config.isPanning) return;
+                const dx = e.clientX - config.startX;
+                const dy = e.clientY - config.startY;
+                config.translateX = config.panStartX + dx;
+                config.translateY = config.panStartY + dy;
+                updateTransform();
+            });
+            
+            window.addEventListener('mouseup', () => {
+                config.isPanning = false;
+            });
+            
+            document.addEventListener('wheel', e => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    config.zoom = Math.max(0.2, Math.min(5, config.zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
+                    updateTransform();
+                }
+            }, { passive: false });
+            
+            document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+            ['gesturestart', 'gesturechange', 'gestureend'].forEach(ev => document.addEventListener(ev, e => e.preventDefault()));
+            
+            let ts = {}, pan = false;
+            pageImage.ontouchstart = e => {
+                if (e.touches.length === 1 && config.zoom > 1) {
+                    pan = true; ts = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: config.translateX, ty: config.translateY };
+                } else if (e.touches.length === 2) {
+                    pan = false; e.preventDefault();
+                    config.touchDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+                    config.touchZoom = config.zoom;
+                }
+            };
+            pageImage.ontouchmove = e => {
+                if (e.touches.length === 1 && pan && config.zoom > 1) {
+                    e.preventDefault();
+                    config.translateX = ts.tx + e.touches[0].clientX - ts.x;
+                    config.translateY = ts.ty + e.touches[0].clientY - ts.y;
+                    updateTransform();
+                } else if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const d = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+                    config.zoom = Math.max(0.2, Math.min(5, config.touchZoom * (d / config.touchDist)));
+                    updateTransform();
+                }
+            };
+            pageImage.ontouchend = () => pan = false;
+            pageImage.ondblclick = () => { config.zoom = 1; config.translateX = config.translateY = 0; updateTransform(); };
+        }
+        
+        window.onload = init;
+        window.onhashchange = () => {
+            const m = location.hash.match(/^#page=(-?\d+)$/);
+            if (m) {
+                const displayNum = parseInt(m[1]);
+                const idx = displayNum + config.pageOffset - 1;
+                if (idx >= 0 && idx < config.pages.length) loadPage(idx);
+            }
+        };
+        if (location.hash.startsWith('#page=')) {
+            const displayNum = parseInt(location.hash.slice(6));
+            if (!isNaN(displayNum)) {
+                const idx = displayNum + config.pageOffset - 1;
+                if (idx >= 0) config.currentPage = idx;
+            }
+        }
+    </script>
+
+<!-- WOODEN RULER -->
+<style>
+#woodenRuler {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9990;
+  cursor: ns-resize;
+  display: none;
+  user-select: none;
+}
+#woodenRuler .ruler-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #d4a574 0%, #c49a6c 20%, #b8916a 50%, #c49a6c 80%, #d4a574 100%);
+  border-top: 2px solid #8b6914;
+  border-bottom: 2px solid #8b6914;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+  position: relative;
+  overflow: hidden;
+}
+#woodenRuler .ruler-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0px, rgba(139,105,20,0.1) 1px, transparent 2px, transparent 40px);
+  pointer-events: none;
+}
+#woodenRuler .tick {
+  position: absolute;
+  width: 1px;
+  background: #3d2914;
+}
+#woodenRuler .tick-cm { top: 0; }
+#woodenRuler .tick-in { bottom: 0; }
+#woodenRuler .tick-cm.major { height: 18px; width: 2px; }
+#woodenRuler .tick-cm.half { height: 12px; }
+#woodenRuler .tick-cm.minor { height: 7px; }
+#woodenRuler .tick-in.major { height: 18px; width: 2px; }
+#woodenRuler .tick-in.half { height: 14px; }
+#woodenRuler .tick-in.quarter { height: 10px; }
+#woodenRuler .tick-in.eighth { height: 6px; }
+#woodenRuler .label {
+  position: absolute;
+  font: bold 9px Arial, sans-serif;
+  color: #3d2914;
+}
+#woodenRuler .label-cm { top: 20px; transform: translateX(-50%); }
+#woodenRuler .label-in { bottom: 20px; transform: translateX(-50%); }
+#rulerToggle {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 9999;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  background: #222;
+  color: #e0e0e0;
+  border-radius: 10px;
+  font: 600 13px system-ui;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+}
+#rulerToggle:hover { background: #333; }
+#rulerToggle.active { background: #8b6914; border-color: #d4a574; }
+</style>
+
+<button id="rulerToggle" title="Toggle Ruler">📏</button>
+<div id="woodenRuler">
+  <div class="ruler-body" id="rulerBody"></div>
+</div>
+
+<script>
+(function() {
+  const ruler = document.getElementById('woodenRuler');
+  const body = document.getElementById('rulerBody');
+  const toggle = document.getElementById('rulerToggle');
+  const container = document.getElementById('image-container');
+  const img = document.getElementById('page-image');
+  
+  let visible = false;
+  let dragging = false;
+  let dragStartY = 0;
+  let rulerStartTop = 0;
+  let pxPerMm = null;
+  
+  function calibrate() {
+    if (!img) return;
+    const rect = img.getBoundingClientRect();
+    if (rect.width > 0) {
+      pxPerMm = rect.width / 210; // A4 = 210mm wide
+    } else {
+      pxPerMm = window.innerWidth / 210; // fallback estimate
+    }
+    drawTicks();
+  }
+  
+  function drawTicks() {
+    if (!pxPerMm) return;
+    body.innerHTML = '';
+    
+    const width = window.innerWidth;
+    const pxPerCm = pxPerMm * 10;
+    const pxPerInch = pxPerMm * 25.4;
+    
+    // CM ticks (top)
+    for (let mm = 0; mm * pxPerMm < width; mm++) {
+      const x = mm * pxPerMm;
+      const tick = document.createElement('div');
+      tick.className = 'tick tick-cm';
+      if (mm % 10 === 0) {
+        tick.classList.add('major');
+        const lbl = document.createElement('div');
+        lbl.className = 'label label-cm';
+        lbl.textContent = mm / 10;
+        lbl.style.left = x + 'px';
+        body.appendChild(lbl);
+      } else if (mm % 5 === 0) {
+        tick.classList.add('half');
+      } else {
+        tick.classList.add('minor');
+      }
+      tick.style.left = x + 'px';
+      body.appendChild(tick);
+    }
+    
+    // Inch ticks (bottom)
+    for (let eighth = 0; eighth * (pxPerInch / 8) < width; eighth++) {
+      const x = eighth * (pxPerInch / 8);
+      const tick = document.createElement('div');
+      tick.className = 'tick tick-in';
+      if (eighth % 8 === 0) {
+        tick.classList.add('major');
+        const lbl = document.createElement('div');
+        lbl.className = 'label label-in';
+        lbl.textContent = eighth / 8;
+        lbl.style.left = x + 'px';
+        body.appendChild(lbl);
+      } else if (eighth % 4 === 0) {
+        tick.classList.add('half');
+      } else if (eighth % 2 === 0) {
+        tick.classList.add('quarter');
+      } else {
+        tick.classList.add('eighth');
+      }
+      tick.style.left = x + 'px';
+      body.appendChild(tick);
+    }
+  }
+  
+  function show() {
+    visible = true;
+    ruler.style.display = 'block';
+    toggle.classList.add('active');
+    calibrate();
+  }
+  
+  function hide() {
+    visible = false;
+    ruler.style.display = 'none';
+    toggle.classList.remove('active');
+  }
+  
+  toggle.addEventListener('click', () => visible ? hide() : show());
+  
+  // Drag to move vertically
+  ruler.addEventListener('mousedown', e => {
+    dragging = true;
+    dragStartY = e.clientY;
+    rulerStartTop = ruler.getBoundingClientRect().top;
+    e.preventDefault();
+  });
+  
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dy = e.clientY - dragStartY;
+    const newTop = Math.max(0, Math.min(window.innerHeight - 60, rulerStartTop + dy));
+    ruler.style.top = newTop + 'px';
+    ruler.style.transform = 'none';
+  });
+  
+  window.addEventListener('mouseup', () => { dragging = false; });
+  
+  // Touch support
+  ruler.addEventListener('touchstart', e => {
+    dragging = true;
+    dragStartY = e.touches[0].clientY;
+    rulerStartTop = ruler.getBoundingClientRect().top;
+  }, { passive: true });
+  
+  window.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const dy = e.touches[0].clientY - dragStartY;
+    const newTop = Math.max(0, Math.min(window.innerHeight - 60, rulerStartTop + dy));
+    ruler.style.top = newTop + 'px';
+    ruler.style.transform = 'none';
+  }, { passive: true });
+  
+  window.addEventListener('touchend', () => { dragging = false; });
+  
+  // Recalibrate on resize or fit mode change
+  window.addEventListener('resize', () => { if (visible) calibrate(); });
+  if (img) img.addEventListener('load', () => { if (visible) calibrate(); });
+  
+  const fitW = document.getElementById('fit-width');
+  const fitH = document.getElementById('fit-height');
+  if (fitW) fitW.addEventListener('click', () => setTimeout(calibrate, 50));
+  if (fitH) fitH.addEventListener('click', () => setTimeout(calibrate, 50));
+})();
+</script>
+
+</body>
+</html>

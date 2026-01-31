@@ -1,0 +1,170 @@
+# Fundamental Applied Mathematics - Table of Contents
+# 3rd Edition - Leaving Certificate Applied Maths
+# Use actual file page numbers (no offset)
+
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=1
+CHAPTER|DEDIC|Title Page|TITPG.0|start=3|end=3
+CHAPTER|DEDIC|Dedication & Acknowledgements|DEDIC.0|start=4|end=4
+CHAPTER|TOC|Table of Contents|TOC.0|start=5|end=5
+CHAPTER|INTRODUCTION|Introduction|INTRO.0|start=6|end=6
+
+
+
+CHAPTER|01|Units & Vectors|CH01.0|start=7|end=30
+
+SECTION||Introduction|start=8|end=8
+SECTION||Dimensional Analysis|start=9|end=9
+SECTION||Scalars|start=8|end=8
+SECTION||Vectors|start=8|end=14
+SECTION||The i–j Plane|start=14|end=14
+SECTION||Vector Multiplication|start=15|end=17
+SECTION||Writing Vectors in Terms of i and j|start=20|end=22
+SECTION||Vectors in Polar Form|start=23|end=23
+SECTION||Difference Between Displacement and Distance|start=25|end=25
+SECTION||Summary and Exam Tips|start=27|end=27
+
+CHAPTER|02|Uniform Acceleration|CH02.0|start=31|end=48
+
+SECTION||Uniform Acceleration|start=32|end=33
+SECTION||Using Time-Velocity Graphs|start=34|end=35
+SECTION||The area in velocity time graphs |start=35|end=36
+SECTION||Exercises 2B |start=36|end=37
+SECTION||Problems which lead to a Linear Equation|start=37|end=38
+SECTION||Problems which lead to a Simultaneous Equation|start=38|end=39
+SECTION||Exercises 2D|start=39|end=40
+SECTION||Exercises 2E|start=40|end=41
+SECTION||Problems involving two objects|start=41|end=43
+SECTION||Exercises 2F|start=43|end=44
+SECTION||Motion under Gravity|start=44|end=45
+SECTION||Harder examples: Dealing with letters instead of numbers|start=45|end=47
+SECTION||Summary of Important Points|start=48|end=48
+SECTION||Exam Tips|start=48|end=48
+
+
+CHAPTER|04|Newton’s Laws & Connected Particles|CH04.0|start=66|end=88
+SECTION||Newton’s Laws of Motion|start=66|end=66
+SECTION||Tension|start=67|end=67
+SECTION||Two More Kinds of Force|start=70|end=70
+SECTION||The Laws of Friction|start=72|end=72
+SECTION||Systems of Connected Particles|start=74|end=84
+SECTION||Particles on Slopes|start=84|end=84
+SECTION||Summary of Important Points|start=88|end=88
+SECTION||Exam Tips|start=88|end=88
+
+CHAPTER|05|Work, Power, Energy & Momentum|CH05.0|start=91|end=105
+SECTION||Work and Power|start=91|end=91
+SECTION||Drag Forces|start=92|end=92
+SECTION||Energy|start=94|end=94
+SECTION||Conservation of Energy|start=95|end=95
+SECTION||Principle of Conservation of Energy|start=95|end=95
+SECTION||Conservation of Momentum|start=98|end=100
+SECTION||Conservation of Momentum as it Applies to Strings|start=102|end=102
+SECTION||Summary of Important Points|start=105|end=105
+SECTION||Exam Tips|start=105|end=105
+
+CHAPTER|06|Impacts and Collisions|CH06.0|start=108|end=122
+SECTION||Impacts|start=108|end=108
+SECTION||Direct Collisions|start=110|end=110
+SECTION||Newton’s Law of Restitution|start=111|end=113
+SECTION||Oblique Collisions|start=114|end=117
+SECTION||Harder Examples|start=117|end=118
+SECTION||Projectiles Which Bounce|start=118|end=121
+SECTION||Summary of Important Points|start=122|end=122
+SECTION||Exam Tips|start=122|end=122
+
+CHAPTER|07|Motion in a Circle|CH07.0|start=125|end=142
+SECTION||Centripetal Accelerations|start=125|end=125
+SECTION||Motion in a Horizontal Circle|start=126|end=132
+SECTION||Motion in a Vertical Circle|start=133|end=136
+SECTION||Hooke’s Law|start=137|end=140
+SECTION||Summary of Important Points|start=142|end=142
+SECTION||Exam Tips|start=142|end=142
+
+CHAPTER|08|Difference Equations|CH08.0|start=145|end=164
+SECTION||First and Second Differences|start=145|end=145
+SECTION||Recurrence Relations|start=148|end=148
+SECTION||Difference Equations|start=149|end=149
+SECTION||Solving First-Order Difference Equations|start=150|end=150
+SECTION||Interest Repayments|start=153|end=153
+SECTION||Second-Order Homogeneous Difference Equations|start=154|end=154
+SECTION||Inhomogeneous Difference Equations|start=158|end=158
+SECTION||Summary of Important Points|start=164|end=164
+
+CHAPTER|09|Differentiation and Integration|CH09.0|start=167|end=182
+SECTION||Logarithms|start=167|end=167
+SECTION||Indefinite Integrals|start=167|end=167
+SECTION||Definite Integrals|start=168|end=168
+SECTION||Integration by Parts|start=169|end=169
+SECTION||The Chain Rule for Composite Functions|start=171|end=171
+SECTION||Rates of Change|start=173|end=173
+SECTION||Using Integration|start=174|end=174
+SECTION||Differentiating Vectors|start=177|end=177
+SECTION||Work Done by a Variable Force|start=178|end=178
+SECTION||Summary of Important Points|start=182|end=182
+
+CHAPTER|10|Differential Equations|CH10.0|start=185|end=196
+SECTION||Differential Equations|start=185|end=185
+SECTION||Solving Real-Life Problems|start=187|end=187
+SECTION||Problems Involving Power|start=191|end=191
+SECTION||Problems Involving Populations, Finance, Cooling…|start=192|end=192
+SECTION||Difference: Differential and Difference Equations|start=193|end=193
+SECTION||Summary of Important Points|start=196|end=196
+
+CHAPTER|11|Networks and Graphs|CH11.0|start=199|end=235
+SECTION||Graphs|start=199|end=199
+SECTION||Walks, Paths and Cycles|start=205|end=205
+SECTION||Connected and Disconnected Graphs|start=206|end=206
+SECTION||Incident and Adjacent Nodes|start=209|end=209
+SECTION||Adjacency Matrices|start=212|end=212
+SECTION||Adjacency Matrices for Digraphs|start=217|end=217
+SECTION||Trees|start=218|end=218
+SECTION||Minimum Spanning Tree: Kruskal’s Algorithm|start=222|end=222
+SECTION||Prim’s Algorithm|start=226|end=226
+SECTION||Summary|start=235|end=235
+
+CHAPTER|12|Optimal Paths|CH12.0|start=238|end=294
+SECTION||Dijkstra’s Algorithm|start=238|end=238
+SECTION||Critical Path Analysis|start=246|end=246
+SECTION||Calculating the Time to Complete a Project|start=255|end=255
+SECTION||Critical Activities and Critical Paths|start=259|end=259
+SECTION||Gantt Charts|start=263|end=263
+SECTION||Scheduling|start=266|end=266
+SECTION||Bellman’s Principle of Optimality|start=273|end=273
+SECTION||Using Bellman’s Principle of Optimality|start=273|end=273
+SECTION||Dynamic Programming: Multi-Stage Problems|start=274|end=274
+SECTION||Dynamic Programming Tables|start=281|end=281
+SECTION||Routing Problems|start=281|end=281
+SECTION||Stock Control Problems|start=283|end=283
+SECTION||Allocation of Resources|start=284|end=284
+SECTION||Equipment Replacement & Maintenance|start=286|end=286
+
+CHAPTER|13|Mathematical Modelling Project|CH13.0|start=297|end=304
+SECTION||The Project|start=297|end=297
+SECTION||An Example of a Modelling Project|start=297|end=297
+SECTION||First Modelling Cycle|start=298|end=298
+SECTION||Second Modelling Cycle|start=299|end=299
+SECTION||Third Modelling Cycle|start=299|end=300
+SECTION||Fourth Modelling Cycle|start=301|end=302
+SECTION||Other Angles|start=303|end=303
+SECTION||Presentation|start=303|end=303
+SECTION||Practice Makes Perfect|start=303|end=304
+
+CHAPTER|ANSWERS|Answers|ANSWERS.0|start=307|end=322
+SECTION||Answers Chapter 1|start=307|end=307|end_inclusive=true
+SECTION||Answers Chapter 2|start=308|end=308|end_inclusive=true
+SECTION||Answers Chapter 3|start=309|end=309|end_inclusive=true
+SECTION||Answers Chapter 4|start=310|end=310|end_inclusive=true
+SECTION||Answers Chapter 5|start=311|end=311|end_inclusive=true
+SECTION||Answers Chapter 6|start=312|end=312|end_inclusive=true
+SECTION||Answers Chapter 7|start=313|end=313|end_inclusive=true
+SECTION||Answers Chapter 8|start=314|end=314|end_inclusive=true
+SECTION||Answers Chapter 9|start=315|end=315|end_inclusive=true
+SECTION||Answers Chapter 10|start=317|end=317|end_inclusive=true
+SECTION||Answers Chapter 11|start=319|end=319|end_inclusive=true
+SECTION||Answers Chapter 12|start=322|end=322|end_inclusive=true
+
+SECTION|12.A|Answers Chapter 12|start=322|end=322|end_inclusive=true
+
+
+
+CHAPTER|BACKCOVER|Back Cover|BACKCOVER.0|start=324|end=324|end_inclusive=true

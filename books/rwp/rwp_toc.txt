@@ -1,0 +1,279 @@
+# Real World Physics (2nd Edition) - Table of Contents
+# Leaving Certificate Physics
+# Book page numbering starts at page 1 on PDF file page 9 (Chapter 1 starts here)
+# Use actual file page numbers
+# offset is 8
+
+# Front Matter
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=4
+CHAPTER|TOC|Table of Contents|TOC.0|start=5|end=8
+CHAPTER|PREFACE|Preface / Introduction|PREFACE.0|start=9|end=12
+
+# Main Content
+CHAPTER|01|The Nature of Science|CH01.0|start=13|end=32
+SECTION|1.1|The nature of scientific knowledge|start=14|end=16
+SECTION|1.2|Measurement and units|start=16|end=17
+SECTION|1.3|Error in measurements|start=17|end=20
+SECTION|1.4|Basic units and derived units|start=20|end=23
+SECTION|1.5|Scientific notation|start=23|end=26
+SECTION|1.6|Unit analysis|start=26|end=28
+
+CHAPTER|02|Reflection of Light|CH02.0|start=33|end=52
+SECTION|2.1|Understanding the nature of light|start=34|end=35
+SECTION|2.2|Vision and light|start=35|end=36
+SECTION|2.3|Types of reflection|start=36|end=37
+SECTION|2.4|The laws of reflection of light|start=37|end=38
+SECTION|2.5|The image produced in a plane mirror|start=38|end=40
+SECTION|2.6|Uses of mirrors in technological and medical contexts|start=40|end=42
+
+CHAPTER|03|Refraction of Light|CH03.0|start=53|end=72
+SECTION|3.1|What is refraction of light?|start=54|end=57
+SECTION|3.2|The laws of refraction of light and refractive index|start=57|end=62
+SECTION|3.3|Refractive index in terms of relative speeds|start=62|end=63
+SECTION|3.4|Critical angle and total internal reflection|start=63|end=65
+SECTION|3.5|Relationship between refractive index and critical angle|start=65|end=67
+SECTION|3.6|Applications of total internal reflection|start=67|end=70
+
+CHAPTER|04|Lenses|CH04.0|start=73|end=92
+SECTION|4.1|Converging and diverging lenses|start=74|end=76
+SECTION|4.2|How an image is formed in a converging lens|start=76|end=79
+SECTION|4.3|Formula for a converging lens|start=79|end=82
+SECTION|4.4|How an image is formed by a diverging lens|start=82|end=84
+SECTION|4.5|Formula for a diverging lens|start=84|end=86
+SECTION|4.6|Uses of lenses in technological and medical contexts|start=86|end=89
+SECTION|4.7|Models in physics|start=89|end=90
+
+CHAPTER|05|Speed, Displacement and Velocity|CH05.0|start=93|end=112
+SECTION|5.1|Time|start=94|end=95
+SECTION|5.2|Distance|start=95|end=96
+SECTION|5.3|Speed|start=96|end=98
+SECTION|5.4|Displacement|start=98|end=99
+SECTION|5.5|Velocity|start=99|end=101
+SECTION|5.6|Measuring velocity in the laboratory|start=101|end=105
+SECTION|5.7|Displacement-time graphs|start=105|end=110
+
+CHAPTER|06|Acceleration|CH06.0|start=113|end=132
+SECTION|6.1|Acceleration|start=114|end=116
+SECTION|6.2|Constant (uniform) acceleration|start=116|end=119
+SECTION|6.3|Velocity-time graphs|start=119|end=124
+SECTION|6.4|Measuring constant acceleration|start=124|end=128
+SECTION|6.5|Acceleration due to gravity, g|start=128|end=130
+
+CHAPTER|07|Vectors and Scalars|CH07.0|start=133|end=152
+SECTION|7.1|Physical quantities|start=134|end=136
+SECTION|7.2|Vectors in two dimensions|start=136|end=142
+SECTION|7.3|Resolving a vector into perpendicular components|start=142|end=146
+
+CHAPTER|08|Force, Mass and Momentum|CH08.0|start=153|end=172
+SECTION|8.1|Force|start=154|end=157
+SECTION|8.2|Mass|start=157|end=159
+SECTION|8.3|The newton|start=159|end=162
+SECTION|8.4|Weight and mass|start=162|end=167
+SECTION|8.5|Momentum and Newton's laws of motion|start=167|end=175
+SECTION|8.6|Projectiles|start=175|end-180
+SECTION|8.7|The principle of conservation of momentum|start=180|end=186
+SECTION|8.8|Collisions in two dimensions|start=186|end=190
+
+CHAPTER|09|Density, Pressure and Gravity|CH09.0|start=173|end=192
+SECTION|9.1|Density|start=174|end=177
+SECTION|9.2|Pressure|start=177|end=180
+SECTION|9.3|Pressure due to a liquid|start=180|end=183
+SECTION|9.4|The buoyancy force on an object immersed in a liquid|start=183|end=185
+SECTION|9.5|Pressure in gases and atmospheric pressure|start=185|end=190
+SECTION|9.6|Gravity - the cement of the universe|start=190|end=192
+SECTION|9.7|Gravity and weight|start=192|end=195
+SECTION|9.8|Gravitational fields|start=195|end=198
+SECTION|9.9|Escape velocity|start=198|end=200
+
+CHAPTER|10|Work, Energy and Power|CH10.0|start=193|end=212
+SECTION|10.1|Work|start=194|end=197
+SECTION|10.2|Energy|start=197|end=199
+SECTION|10.3|Principle of conservation of energy|start=199|end=201
+SECTION|10.4|Kinetic energy|start=201|end=204
+SECTION|10.5|Potential energy|start=204|end=210
+SECTION|10.6|Renewable and non-renewable sources of energy|start=210|end=213
+SECTION|10.7|Power|start=213|end=216
+SECTION|10.8|Efficiency|start=216|end=219
+
+CHAPTER|11|Circular Motion|CH11.0|start=213|end=232
+SECTION|11.1|Particle moving in a circle|start=214|end=217
+SECTION|11.2|Centripetal force|start=217|end=223
+SECTION|11.3|Circular satellite orbits|start=223|end=228
+SECTION|11.4|Near-Earth and geostationary orbits|start=228|end=230
+
+CHAPTER|12|Elasticity and Hooke's Law|CH12.0|start=233|end=252
+SECTION|12.1|Elasticity|start=234|end=236
+SECTION|12.2|Hooke's law|start=236|end=240
+SECTION|12.3|Work done in stretching or compressing|start=240|end=243
+SECTION|12.4|Energy changes in an oscillating body that obeys Hooke's law|start=243|end=246
+
+CHAPTER|13|Temperature and Thermometers|CH13.0|start=253|end=272
+SECTION|13.1|Concept of temperature|start=254|end=257
+SECTION|13.2|Thermometric properties|start=257|end=260
+
+CHAPTER|14|Heat Transfer and Temperature Change|CH14.0|start=273|end=292
+SECTION|14.1|The states of matter|start=274|end=277
+SECTION|14.2|Heat capacity|start=277|end=279
+SECTION|14.3|Specific heat capacity|start=279|end=284
+SECTION|14.4|Latent heat|start=284|end=287
+SECTION|14.5|Specific latent heat|start=287|end=291
+SECTION|14.6|The heat pump|start=291|end=293
+SECTION|14.7|Heat transfer|start=293|end=296
+
+CHAPTER|15|Waves and Wave Motion|CH15.0|start=293|end=312
+SECTION|15.1|Travelling waves|start=294|end=297
+SECTION|15.2|Waves are a means of transferring energy from one place to another|start=297|end=299
+SECTION|15.3|Transverse and longitudinal waves|start=299|end=302
+SECTION|15.4|The relationship v = fλ|start=302|end=305
+SECTION|15.5|Wave behaviour|start=305|end=310
+SECTION|15.6|Stationary waves|start=310|end=313
+SECTION|15.7|The Doppler effect|start=313|end=317
+
+CHAPTER|16|Vibrations and Sound|CH16.0|start=313|end=332
+SECTION|16.1|Every source of sound is a vibrating object|start=314|end=316
+SECTION|16.2|Sound travels as a mechanical wave|start=316|end=318
+SECTION|16.3|How a vibrating object produces a sound wave|start=318|end=321
+SECTION|16.4|The speed of sound|start=321|end=324
+SECTION|16.5|Characteristics of sounds|start=324|end=327
+SECTION|16.6|Frequency limits of audibility and ultrasound|start=327|end=329
+SECTION|16.7|Resonance|start=329|end=332
+SECTION|16.8|Standing waves on a stretched string|start=332|end=337
+SECTION|16.9|The sonometer|start=337|end=340
+
+CHAPTER|17|The Wave Nature of Light|CH17.0|start=333|end=352
+SECTION|17.1|The wave nature of light|start=334|end=338
+SECTION|17.2|Wavelength and colour|start=338|end=341
+SECTION|17.3|Diffraction grating|start=341|end-346
+SECTION|17.4|Polarisation of light|start=346|end=349
+SECTION|17.5|Dispersion|start=349|end=352
+SECTION|17.6|The electromagnetic spectrum|start=352|end=356
+SECTION|17.7|Solar irradiance|start=356|end=358
+
+CHAPTER|18|Static Electricity|CH18.0|start=353|end=372
+SECTION|18.1|Static electricity|start=354|end=357
+SECTION|18.2|Charging objects by friction|start=357|end=359
+SECTION|18.3|Atomic nature of electric charge|start=359|end=361
+SECTION|18.4|Conductors and insulators|start=361|end=363
+SECTION|18.5|Charging objects by induction|start=363|end=365
+SECTION|18.6|The gold leaf electroscope|start=365|end=368
+SECTION|18.7|The distribution of charge on an insulated conductor|start=368|end=370
+SECTION|18.8|The size of the force between two static electric charges|start=370|end=375
+SECTION|18.9|Electric fields|start=375|end=378
+SECTION|18.10|Electric field strength|start=378|end=381
+
+CHAPTER|19|Potential Difference|CH19.0|start=373|end=392
+SECTION|19.1|Potential difference|start=374|end=377
+SECTION|19.2|Relationship between potential difference and electric field strength|start=377|end=381
+
+CHAPTER|20|Current and Charge|CH20.0|start=393|end=412
+SECTION|20.1|Three effects of an electric current|start=394|end=397
+SECTION|20.2|What is electric charge?|start=397|end=400
+SECTION|20.3|Size of an electric current|start=400|end=403
+SECTION|20.4|Conventional current|start=403|end=405
+SECTION|20.5|Direct current (DC) and alternating current (AC)|start=405|end=407
+SECTION|20.6|Series and parallel circuits|start=407|end=410
+
+CHAPTER|21|Potential Difference and Electromotive Force|CH21.0|start=413|end=432
+SECTION|21.1|Energy changes in a simple electric circuit|start=414|end=417
+SECTION|21.2|Potential difference between two points in a circuit|start=417|end=420
+SECTION|21.3|The rate at which heat is produced in a current-carrying conductor|start=420|end=423
+SECTION|21.4|Voltages in series and parallel|start=423|end=426
+SECTION|21.5|Electromotive force (emf)|start=426|end=429
+
+CHAPTER|22|Resistance|CH22.0|start=433|end=452
+SECTION|22.1|Resistance|start=434|end=437
+SECTION|22.2|Measuring resistance|start=437|end=439
+SECTION|22.3|Circuit diagrams and circuit symbols|start=439|end=442
+SECTION|22.4|Ohm's law|start=442|end=445
+SECTION|22.5|Resistors in series and parallel|start=445|end=451
+SECTION|22.6|Variation of the resistance of a conductor with temperature|start=451|end=455
+SECTION|22.7|Resistivity|start=455|end=459
+SECTION|22.8|The potential divider circuit|start=459|end=462
+
+CHAPTER|23|Heating Effect of an Electric Current|CH23.0|start=453|end=472
+SECTION|23.1|The heating effect of an electric current|start=454|end=457
+SECTION|23.2|How heat affects the current-voltage relationship of a conductor|start=457|end=461
+SECTION|23.3|Advantage of high voltage in the transmission of electrical energy|start=461|end=464
+SECTION|23.4|Domestic electric circuits|start=464|end=467
+
+CHAPTER|24|Semiconductors|CH24.0|start=473|end=492
+SECTION|24.1|Semiconductors|start=474|end=477
+SECTION|24.2|Conduction in semiconductors|start=477|end=481
+SECTION|24.3|The p-n junction|start=481|end=485
+SECTION|24.4|The light-emitting diode (LED)|start=485|end=488
+SECTION|24.5|The transistor|start=488|end=491
+SECTION|24.6|The transistor as a switch|start=491|end=494
+SECTION|24.7|Real-world applications of semiconductors|start=494|end=497
+
+CHAPTER|25|Magnets and Magnetic Fields|CH25.0|start=493|end=512
+SECTION|25.1|Basic properties of magnets|start=494|end=497
+SECTION|25.2|Magnetic fields|start=497|end-501
+SECTION|25.3|The magnetic effect of an electric current|start=501|end=505
+SECTION|25.4|Magnetic field due to current in a circular loop and due to current in a coil|start=505|end=508
+SECTION|25.5|Magnetic field due to current in a solenoid|start=508|end=511
+SECTION|25.6|Uses of permanent and temporary magnets|start=511|end=514
+
+CHAPTER|26|Current in a Magnetic Field|CH26.0|start=513|end=532
+SECTION|26.1|Force on a current-carrying conductor in a magnetic field|start=514|end=518
+SECTION|26.2|Magnetic flux density|start=518|end=522
+SECTION|26.3|Force on a current-carrying coil in a magnetic field|start=522|end=526
+SECTION|26.4|Force exerted by a magnetic field on a moving charge|start=526|end=530
+SECTION|26.5|The magnetic force between two current-carrying conductors|start=530|end=534
+
+CHAPTER|27|Electromagnetic Induction|CH27.0|start=533|end=552
+SECTION|27.1|Electromagnetic induction: The generator effect|start=534|end=537
+SECTION|27.2|Magnetic flux|start=537|end=540
+SECTION|27.3|Faraday's law of electromagnetic induction|start=540|end=545
+SECTION|27.4|Lenz's law of electromagnetic induction|start=545|end=550
+SECTION|27.5|Changing mechanical energy to electrical energy - generators|start=550|end=554
+SECTION|27.6|Alternating current|start=554|end=557
+SECTION|27.7|Mutual inductance|start=557|end=560
+SECTION|27.8|Transformers|start=560|end=565
+SECTION|27.9|Powering the country: Generating electricity|start=565|end=568
+
+CHAPTER|28|The Electron|CH28.0|start=553|end=572
+SECTION|28.1|Properties of the electron|start=554|end=557
+SECTION|28.2|Thermionic emission|start=557|end=560
+SECTION|28.3|The cathode ray tube|start=560|end=563
+SECTION|28.4|Deflection of a beam of electrons in an electric field|start=563|end=567
+SECTION|28.5|Deflection of a beam of electrons in a magnetic field|start=567|end=571
+SECTION|28.6|The photoelectric effect|start=571|end=574
+SECTION|28.7|The photocell|start=574|end=577
+SECTION|28.8|The particle model of light is needed to explain the photoelectric effect|start=577|end=581
+SECTION|28.9|Einstein's photoelectric law|start=581|end=585
+SECTION|28.10|Real-life applications of photoelectric effect|start=585|end=588
+SECTION|28.11|X-rays|start=588|end=591
+SECTION|28.12|Comparing X-ray production and the photoelectric effect|start=591|end=594
+
+CHAPTER|29|The Atom, the Nucleus and Radioactivity|CH29.0|start=573|end=592
+SECTION|29.1|Atoms|start=574|end=577
+SECTION|29.2|Emission spectra|start=577|end=580
+SECTION|29.3|The Bohr model of the atom|start=580|end-584
+SECTION|29.4|Spectroscopy and our understanding of the universe|start=584|end=587
+SECTION|29.5|Structure of the nucleus|start=587|end=590
+SECTION|29.6|Radioactivity|start=590|end=593
+SECTION|29.7|The nature of α, β and γ radiation|start=593|end=597
+SECTION|29.8|The law of radioactive decay|start=597|end=602
+SECTION|29.9|Detecting nuclear radiation|start=602|end=605
+SECTION|29.10|Safety implications of radioactive emissions|start=605|end=608
+
+CHAPTER|30|Fission, Fusion and Nuclear Energy|CH30.0|start=593|end=612
+SECTION|30.1|Nuclear fission|start=594|end=598
+SECTION|30.2|The atomic bomb (an uncontrolled fission reaction)|start=598|end=601
+SECTION|30.3|Nuclear reactors (a controlled fission reaction)|start=601|end=605
+SECTION|30.4|Nuclear fusion|start=605|end=608
+SECTION|30.5|The equivalence of mass and energy|start=608|end=612
+SECTION|30.6|Mass defect, binding energy and nuclear stability|start=612|end=616
+
+CHAPTER|31|Particle Physics|CH31.0|start=613|end=632
+SECTION|31.1|Conservation of energy and momentum in nuclear reactions revisited|start=614|end=618
+SECTION|31.2|The first splitting of a nucleus by artificially accelerated particles|start=618|end=622
+SECTION|31.3|The discovery of antiparticles|start=622|end=626
+SECTION|31.4|Particle accelerators|start=626|end=630
+SECTION|31.5|The fundamental forces of nature|start=630|end=634
+SECTION|31.6|Classification of the particles: leptons and hadrons|start=634|end=638
+SECTION|31.7|The standard model of particle physics|start=638|end=642
+
+# Back Matter
+CHAPTER|INDEX|Index|INDEX.0|start=633|end=636
+CHAPTER|BACKCOVER|End Pages / Credits|start=637|end=637|end_inclusive=true

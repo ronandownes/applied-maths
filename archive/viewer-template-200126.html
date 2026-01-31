@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>__BOOK_NAME__ - Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+        
+        /* Always visible TOC toggle button */
+        .toc-toggle-fixed {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            z-index: 2000;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 10px 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .toc-toggle-fixed:hover {
+            background: #0080ff;
+            padding-left: 12px;
+        }
+        
+        /* Sidebar TOC */
+        .toc-sidebar {
+            width: 300px;
+            background: #2a2a2a;
+            border-right: 1px solid #3a3a3a;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, width 0.3s ease;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+        
+        .toc-collapsed .toc-sidebar {
+            transform: translateX(-300px);
+            width: 0;
+        }
+        
+        .toc-collapsed .toc-toggle-fixed {
+            left: 0;
+        }
+        
+        .toc-header {
+            padding: 16px;
+            border-bottom: 1px solid #3a3a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2a2a2a;
+        }
+        
+        .toc-header h2 {
+            font-size: 18px;
+            color: #fff;
+        }
+        
+        .toc-close {
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .toc-close:hover {
+            background: #3a3a3a;
+        }
+        
+        .toc-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        
+        .toc-chapter {
+            margin-bottom: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .toc-chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: #3a3a3a;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+        
+        .toc-chapter-header:hover {
+            background: #4a4a4a;
+        }
+        
+        .chapter-expand {
+            color: #66b3ff;
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .chapter-expand.expanded {
+            transform: rotate(90deg);
+        }
+        
+        .chapter-number {
+            color: #66b3ff;
+            font-weight: bold;
+            font-size: 14px;
+            min-width: 36px;
+        }
+        
+        .toc-chapter-title {
+            font-weight: bold;
+            font-size: 14px;
+            flex: 1;
+        }
+        
+        .toc-sections {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #2a2a2a;
+        }
+        
+        .toc-chapter.expanded .toc-sections {
+            max-height: 1000px;
+        }
+        
+        .toc-section {
+            padding: 8px 12px 8px 52px;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 2px;
+            margin: 1px 4px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-number {
+            color: #888;
+            font-size: 12px;
+            min-width: 40px;
+        }
+        
+        .section-title {
+            flex: 1;
+        }
+        
+        .toc-section:hover {
+            background: #3a3a3a;
+        }
+        
+        .toc-section.active {
+            background: #4a4a4a;
+            color: #fff;
+        }
+        
+        .toc-section.active .section-number {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        /* Main viewer */
+        .viewer {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .toc-collapsed .viewer {
+            margin-left: 0;
+        }
+        
+        /* Controls - compact */
+        .controls {
+            background: #2a2a2a;
+            padding: 6px 8px;
+            border-bottom: 1px solid #3a3a3a;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            z-index: 100;
+        }
+        
+        button {
+            background: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #e0e0e0;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            min-width: 28px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        
+        button:hover {
+            background: #4a4a4a;
+            border-color: #5a5a5a;
+        }
+        
+        button.active {
+            background: #0066cc;
+            border-color: #0080ff;
+        }
+        
+        button.copied {
+            background: #2e7d32 !important;
+            border-color: #4caf50 !important;
+        }
+        
+        /* Claude generated: fraction-style page info to shrink numbering */
+        .page-info {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 9px;
+            line-height: 1.1;
+            margin: 0 4px;
+            min-width: 20px;
+        }
+        
+        .page-info .page-num {
+            text-align: center;
+        }
+        
+        .page-info .page-divider {
+            width: 100%;
+            height: 1px;
+            background: #888;
+            margin: 1px 0;
+        }
+        
+        .fit-controls {
+            display: flex;
+            gap: 2px;
+            margin: 0 4px;
+        }
+        
+        /* Image container */
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: auto;
+            padding: 0;
+            background: #1a1a1a;
+            position: relative;
+            width: 100%;
+        }
+        
+        .image-container.fit-width {
+            justify-content: flex-start;
+        }
+        
+        .image-container.fit-height {
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .image-container.fit-height img {
+            height: 100% !important;
+            width: auto !important;
+            object-fit: contain;
+            max-width: 100%;
+        }
+        
+        .image-container.fit-width img {
+            width: 100% !important;
+            height: auto !important;
+            object-fit: contain;
+        }
+        
+        #page-image {
+            display: block;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease;
+            margin: 0;
+        }
+        
+        /* Navigation overlay */
+        .nav-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        .nav-left, .nav-right {
+            flex: 1;
+            pointer-events: auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .nav-left:hover, .nav-right:hover {
+            opacity: 0.1;
+        }
+        
+        .nav-left:hover {
+            background: linear-gradient(90deg, rgba(0,0,0,0.3), transparent);
+        }
+        
+        .nav-right:hover {
+            background: linear-gradient(270deg, rgba(0,0,0,0.3), transparent);
+        }
+        
+        /* Zoom indicator */
+        .zoom-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+            z-index: 100;
+        }
+        
+        /* Copy link button feedback */
+        .copy-link-btn {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-link-tooltip {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2e7d32;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .copy-link-tooltip.show {
+            opacity: 1;
+        }
+        
+        /* No TOC message */
+        .no-toc {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .toc-sidebar {
+                width: 280px;
+            }
+            
+            .toc-collapsed .toc-sidebar {
+                transform: translateX(-280px);
+            }
+            
+            .toc-toggle-fixed {
+                top: 70px;
+                padding: 8px 6px;
+            }
+            
+            .controls {
+                padding: 4px 6px;
+                gap: 3px;
+            }
+            
+            button {
+                padding: 5px 6px;
+                font-size: 11px;
+                min-width: 24px;
+            }
+            
+            .page-info {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+<body class="toc-collapsed">
+    <!-- Always visible TOC toggle button -->
+    <button class="toc-toggle-fixed" id="toc-toggle-fixed" title="Show/Hide Table of Contents (T)">
+        📖
+    </button>
+
+    <!-- Sidebar TOC -->
+    <div class="toc-sidebar">
+        <div class="toc-header">
+            <h2>Table of Contents</h2>
+            <button class="toc-close" id="toc-close" title="Close">×</button>
+        </div>
+        <div class="toc-content" id="toc-content">
+            <!-- TOC will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Main Viewer -->
+    <div class="viewer" id="main-viewer">
+        <!-- Controls -->
+        <div class="controls">
+            <button id="prev" title="Previous Page (←)">◀</button>
+            <button id="next" title="Next Page (→)">▶</button>
+            
+            <!-- Claude generated: fraction-style page info to shrink numbering -->
+            <span class="page-info">
+                <span class="page-num" id="current-page">1</span>
+                <span class="page-divider"></span>
+                <span class="page-num" id="total-pages">__PAGES_COUNT__</span>
+            </span>
+            
+            <div class="fit-controls">
+                <button id="fit-height" title="Fit Height (H)" class="active">↕</button>
+                <button id="fit-width" title="Fit Width (W)">↔</button>
+            </div>
+            
+            <button id="zoom-in" title="Zoom In (+)">+</button>
+            <button id="zoom-out" title="Zoom Out (-)">−</button>
+            <button id="zoom-reset" title="Reset Zoom (0)">⟲</button>
+            
+            <div style="flex: 1"></div>
+            
+            <button id="copy-link" class="copy-link-btn" title="Copy Link to Current Page (Ctrl+C)">
+                📎
+                <span class="copy-link-tooltip">Copied!</span>
+            </button>
+            
+            <button id="fullscreen" title="Fullscreen (F)">⛶</button>
+        </div>
+
+        <!-- Image Container -->
+        <div class="image-container">
+            <div class="nav-overlay">
+                <div class="nav-left" id="nav-left"></div>
+                <div class="nav-right" id="nav-right"></div>
+            </div>
+            <img id="page-image" src="" alt="Page">
+            <div class="zoom-indicator" id="zoom-indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const config = {
+            pages: __PAGES__,
+            imgBase: __IMG_BASE__,
+            toc: __TOC__,
+            currentPage: 0,
+            zoom: 1.0,
+            isPanning: false,
+            startX: 0,
+            startY: 0,
+            translateX: 0,
+            translateY: 0,
+            lastMouseX: 0,
+            lastMouseY: 0,
+            currentFitMode: localStorage.getItem('fitMode') || 'height',
+            expandedChapters: JSON.parse(localStorage.getItem('expandedChapters') || '{}')
+        };
+        
+        const fitModes = {
+            height: {
+                name: "height",
+                apply: function(img, container) {
+                    img.classList.add('fit-height');
+                    img.classList.remove('fit-width');
+                    container.classList.add('fit-height');
+                    container.classList.remove('fit-width');
+                    img.style.maxWidth = 'none';
+                    img.style.maxHeight = '100%';
+                    img.style.width = 'auto';
+                    img.style.height = 'auto';
+                    img.style.objectFit = 'contain';
+                },
+                remove: function(img, container) {
+                    img.classList.remove('fit-height');
+                    container.classList.remove('fit-height');
+                }
+            },
+            width: {
+                name: "width",
+                apply: function(img, container) {
+                    img.classList.add('fit-width');
+                    img.classList.remove('fit-height');
+                    container.classList.add('fit-width');
+                    container.classList.remove('fit-height');
+                    img.style.maxWidth = '100%';
+                    img.style.maxHeight = 'none';
+                    img.style.width = 'auto';
+                    img.style.height = 'auto';
+                    img.style.objectFit = 'contain';
+                },
+                remove: function(img, container) {
+                    img.classList.remove('fit-width');
+                    container.classList.remove('fit-width');
+                }
+            }
+        };
+        
+        // DOM elements
+        const pageImage = document.getElementById('page-image');
+        const currentPageSpan = document.getElementById('current-page');
+        const totalPagesSpan = document.getElementById('total-pages');
+        const tocContent = document.getElementById('toc-content');
+        const zoomIndicator = document.getElementById('zoom-indicator');
+        const tocToggleFixed = document.getElementById('toc-toggle-fixed');
+        const tocClose = document.getElementById('toc-close');
+        const copyLinkBtn = document.getElementById('copy-link');
+        const copyLinkTooltip = document.querySelector('.copy-link-tooltip');
+        const imageContainer = document.querySelector('.image-container');
+        
+        // Initialize
+        function init() {
+            totalPagesSpan.textContent = config.pages.length;
+            loadPage(config.currentPage);
+            renderTOC();
+            setupEventListeners();
+            loadPreferences();
+            
+            // Show TOC by default if it exists
+            if (config.toc.chapters && config.toc.chapters.length > 0) {
+                setTimeout(() => {
+                    toggleTOC(true);
+                }, 100);
+            }
+        }
+        
+        // Load preferences
+        function loadPreferences() {
+            const savedPage = localStorage.getItem('currentPage');
+            if (savedPage !== null) {
+                const pageNum = parseInt(savedPage);
+                if (pageNum >= 0 && pageNum < config.pages.length) {
+                    config.currentPage = pageNum;
+                    loadPage(config.currentPage);
+                }
+            }
+            
+            setFitMode(config.currentFitMode);
+            
+            // Load TOC state
+            const tocState = localStorage.getItem('tocVisible');
+            if (tocState === 'true') {
+                toggleTOC(true);
+            }
+        }
+        
+        // Toggle TOC visibility
+        function toggleTOC(show) {
+            const body = document.body;
+            if (show === undefined) {
+                show = body.classList.contains('toc-collapsed');
+            }
+            
+            if (show) {
+                body.classList.remove('toc-collapsed');
+                tocToggleFixed.innerHTML = '📖';
+                tocToggleFixed.title = 'Hide Table of Contents (T)';
+            } else {
+                body.classList.add('toc-collapsed');
+                tocToggleFixed.innerHTML = '📖';
+                tocToggleFixed.title = 'Show Table of Contents (T)';
+            }
+            
+            localStorage.setItem('tocVisible', show);
+            
+            // Force image redraw to adjust to new width
+            setTimeout(() => {
+                if (config.currentFitMode === 'width') {
+                    setFitMode('width');
+                }
+            }, 50);
+        }
+        
+        // Set fit mode
+        function setFitMode(mode) {
+            config.currentFitMode = mode;
+            
+            // Remove all fit modes
+            for (const m in fitModes) {
+                fitModes[m].remove(pageImage, imageContainer);
+            }
+            
+            // Apply the selected mode
+            fitModes[mode].apply(pageImage, imageContainer);
+            
+            // Update button states
+            document.getElementById('fit-height').classList.remove('active');
+            document.getElementById('fit-width').classList.remove('active');
+            document.getElementById('fit-' + mode).classList.add('active');
+            
+            // Reset zoom when changing fit mode
+            config.zoom = 1.0;
+            config.translateX = 0;
+            config.translateY = 0;
+            updateImageTransform();
+            
+            // Save preference
+            localStorage.setItem('fitMode', mode);
+            
+            // Scroll to top when changing modes
+            imageContainer.scrollTop = 0;
+            imageContainer.scrollLeft = 0;
+        }
+        
+        // Load page
+        function loadPage(index) {
+            if (index < 0 || index >= config.pages.length) return;
+            
+            config.currentPage = index;
+            const pageName = config.pages[index];
+            const imgPath = config.imgBase ? `${config.imgBase}/${pageName}` : pageName;
+            
+            pageImage.src = imgPath;
+            currentPageSpan.textContent = index + 1;
+            
+            // Reset zoom and position for new page
+            config.zoom = 1.0;
+            config.translateX = 0;
+            config.translateY = 0;
+            updateImageTransform();
+            
+            // Scroll to top for new page
+            imageContainer.scrollTop = 0;
+            imageContainer.scrollLeft = 0;
+            
+            // Update active TOC item
+            updateActiveTOCItem();
+            
+            // Save current page
+            localStorage.setItem('currentPage', index);
+        }
+        
+        // Render TOC with chapter codes from TOC file
+        function renderTOC() {
+            if (!config.toc.chapters || config.toc.chapters.length === 0) {
+                tocContent.innerHTML = '<div class="no-toc">No table of contents available</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            config.toc.chapters.forEach((chapter, chapterIndex) => {
+                const chapterCode = chapter.code || `Chapter ${chapterIndex + 1}`;
+                const isExpanded = config.expandedChapters[chapterIndex] === true || 
+                                   (chapterIndex === 0 && Object.keys(config.expandedChapters).length === 0);
+                
+                html += `
+                    <div class="toc-chapter ${isExpanded ? 'expanded' : ''}" data-index="${chapterIndex}">
+                        <div class="toc-chapter-header">
+                            <span class="chapter-expand ${isExpanded ? 'expanded' : ''}">▶</span>
+                            <div class="chapter-number">${chapterCode}</div>
+                            <div class="toc-chapter-title" data-start="${chapter.start - 1}">
+                                ${chapter.title}
+                            </div>
+                        </div>
+                        <div class="toc-sections">
+                `;
+                
+                if (chapter.sections && chapter.sections.length > 0) {
+                    chapter.sections.forEach(section => {
+                        const sectionCode = section.code || '';
+                        html += `
+                            <div class="toc-section" data-start="${section.start - 1}">
+                                <div class="section-number">${sectionCode}</div>
+                                <div class="section-title">${section.title}</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            tocContent.innerHTML = html;
+            
+            // Add click listeners to TOC items
+            document.querySelectorAll('.toc-chapter-header').forEach(header => {
+                header.addEventListener('click', function(e) {
+                    const chapter = this.parentElement;
+                    const chapterIndex = parseInt(chapter.getAttribute('data-index'));
+                    const isExpanded = chapter.classList.contains('expanded');
+                    
+                    if (e.target.classList.contains('chapter-expand') || 
+                        e.target.classList.contains('chapter-number')) {
+                        chapter.classList.toggle('expanded');
+                        this.querySelector('.chapter-expand').classList.toggle('expanded');
+                        
+                        config.expandedChapters[chapterIndex] = !isExpanded;
+                        localStorage.setItem('expandedChapters', JSON.stringify(config.expandedChapters));
+                    } else {
+                        const startIndex = parseInt(this.querySelector('.toc-chapter-title').getAttribute('data-start'));
+                        if (!isNaN(startIndex) && startIndex >= 0 && startIndex < config.pages.length) {
+                            loadPage(startIndex);
+                        }
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.toc-section').forEach(section => {
+                section.addEventListener('click', function() {
+                    const startIndex = parseInt(this.getAttribute('data-start'));
+                    if (!isNaN(startIndex) && startIndex >= 0 && startIndex < config.pages.length) {
+                        loadPage(startIndex);
+                        
+                        const chapter = this.closest('.toc-chapter');
+                        const chapterIndex = parseInt(chapter.getAttribute('data-index'));
+                        if (!chapter.classList.contains('expanded')) {
+                            chapter.classList.add('expanded');
+                            chapter.querySelector('.chapter-expand').classList.add('expanded');
+                            config.expandedChapters[chapterIndex] = true;
+                            localStorage.setItem('expandedChapters', JSON.stringify(config.expandedChapters));
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Update active TOC item
+        function updateActiveTOCItem() {
+            document.querySelectorAll('.toc-section').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            let activeItem = null;
+            let minDistance = Infinity;
+            
+            document.querySelectorAll('.toc-section').forEach(item => {
+                const startIndex = parseInt(item.getAttribute('data-start'));
+                if (!isNaN(startIndex)) {
+                    const distance = Math.abs(config.currentPage - startIndex);
+                    if (distance < minDistance && config.currentPage >= startIndex) {
+                        minDistance = distance;
+                        activeItem = item;
+                    }
+                }
+            });
+            
+            if (activeItem) {
+                activeItem.classList.add('active');
+                
+                setTimeout(() => {
+                    activeItem.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                }, 100);
+            }
+        }
+        
+        // Update image transform
+        function updateImageTransform() {
+            pageImage.style.transform = `translate(${config.translateX}px, ${config.translateY}px) scale(${config.zoom})`;
+            
+            if (config.zoom !== 1.0) {
+                zoomIndicator.textContent = `${Math.round(config.zoom * 100)}%`;
+                zoomIndicator.style.display = 'block';
+                setTimeout(() => {
+                    zoomIndicator.style.display = 'none';
+                }, 1000);
+            }
+        }
+        
+        // Copy current page link with visual feedback
+        function copyCurrentLink() {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.hash = `#page=${config.currentPage + 1}`;
+            const link = currentUrl.toString();
+            
+            navigator.clipboard.writeText(link).then(() => {
+                copyLinkBtn.classList.add('copied');
+                copyLinkBtn.innerHTML = '✓';
+                copyLinkBtn.title = 'Link copied to clipboard!';
+                
+                copyLinkTooltip.classList.add('show');
+                
+                setTimeout(() => {
+                    copyLinkBtn.classList.remove('copied');
+                    copyLinkBtn.innerHTML = '📎';
+                    copyLinkBtn.title = 'Copy Link to Current Page (Ctrl+C)';
+                    copyLinkTooltip.classList.remove('show');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy link: ', err);
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                copyLinkBtn.classList.add('copied');
+                copyLinkBtn.innerHTML = '✓';
+                copyLinkTooltip.textContent = 'Copied!';
+                copyLinkTooltip.classList.add('show');
+                
+                setTimeout(() => {
+                    copyLinkBtn.classList.remove('copied');
+                    copyLinkBtn.innerHTML = '📎';
+                    copyLinkTooltip.classList.remove('show');
+                }, 2000);
+            });
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('prev').addEventListener('click', () => {
+                loadPage(config.currentPage - 1);
+            });
+            
+            document.getElementById('next').addEventListener('click', () => {
+                loadPage(config.currentPage + 1);
+            });
+            
+            document.getElementById('fit-height').addEventListener('click', () => {
+                setFitMode('height');
+            });
+            
+            document.getElementById('fit-width').addEventListener('click', () => {
+                setFitMode('width');
+            });
+            
+            document.getElementById('zoom-in').addEventListener('click', () => {
+                config.zoom = Math.min(config.zoom + 0.1, 3.0);
+                updateImageTransform();
+            });
+            
+            document.getElementById('zoom-out').addEventListener('click', () => {
+                config.zoom = Math.max(config.zoom - 0.1, 0.1);
+                updateImageTransform();
+            });
+            
+            document.getElementById('zoom-reset').addEventListener('click', () => {
+                config.zoom = 1.0;
+                config.translateX = 0;
+                config.translateY = 0;
+                updateImageTransform();
+            });
+            
+            document.getElementById('fullscreen').addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+            
+            copyLinkBtn.addEventListener('click', copyCurrentLink);
+            
+            tocToggleFixed.addEventListener('click', () => {
+                toggleTOC();
+            });
+            
+            tocClose.addEventListener('click', () => {
+                toggleTOC(false);
+            });
+            
+            document.getElementById('nav-left').addEventListener('click', (e) => {
+                if (e.clientX < window.innerWidth / 2) {
+                    loadPage(config.currentPage - 1);
+                }
+            });
+            
+            document.getElementById('nav-right').addEventListener('click', (e) => {
+                if (e.clientX >= window.innerWidth / 2) {
+                    loadPage(config.currentPage + 1);
+                }
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        loadPage(config.currentPage - 1);
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        loadPage(config.currentPage + 1);
+                        break;
+                    case 'ArrowUp':
+                        if (config.currentFitMode === 'width') {
+                            e.preventDefault();
+                            imageContainer.scrollBy(0, -50);
+                        }
+                        break;
+                    case 'ArrowDown':
+                        if (config.currentFitMode === 'width') {
+                            e.preventDefault();
+                            imageContainer.scrollBy(0, 50);
+                        }
+                        break;
+                    case 'h':
+                    case 'H':
+                        e.preventDefault();
+                        setFitMode('height');
+                        break;
+                    case 'w':
+                    case 'W':
+                        e.preventDefault();
+                        setFitMode('width');
+                        break;
+                    case 't':
+                    case 'T':
+                        e.preventDefault();
+                        toggleTOC();
+                        break;
+                    case 'c':
+                    case 'C':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            copyCurrentLink();
+                        }
+                        break;
+                    case '+':
+                    case '=':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            config.zoom = Math.min(config.zoom + 0.1, 3.0);
+                            updateImageTransform();
+                        }
+                        break;
+                    case '-':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            config.zoom = Math.max(config.zoom - 0.1, 0.1);
+                            updateImageTransform();
+                        }
+                        break;
+                    case '0':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            config.zoom = 1.0;
+                            config.translateX = 0;
+                            config.translateY = 0;
+                            updateImageTransform();
+                        }
+                        break;
+                    case 'f':
+                    case 'F':
+                        e.preventDefault();
+                        if (!document.fullscreenElement) {
+                            document.documentElement.requestFullscreen();
+                        } else {
+                            document.exitFullscreen();
+                        }
+                        break;
+                }
+            });
+            
+            pageImage.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                    config.zoom = Math.max(0.1, Math.min(3.0, config.zoom + delta));
+                    updateImageTransform();
+                }
+            });
+            
+            pageImage.addEventListener('mousedown', (e) => {
+                if (config.zoom > 1.0) {
+                    e.preventDefault();
+                    config.isPanning = true;
+                    config.startX = e.clientX - config.translateX;
+                    config.startY = e.clientY - config.translateY;
+                    pageImage.style.cursor = 'grabbing';
+                }
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (config.isPanning) {
+                    config.translateX = e.clientX - config.startX;
+                    config.translateY = e.clientY - config.startY;
+                    updateImageTransform();
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                config.isPanning = false;
+                pageImage.style.cursor = 'grab';
+            });
+            
+            let touchStartZoom = 1.0;
+            let touchStartDistance = 0;
+            
+            pageImage.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    touchStartDistance = Math.hypot(
+                        touch2.clientX - touch1.clientX,
+                        touch2.clientY - touch1.clientY
+                    );
+                    touchStartZoom = config.zoom;
+                }
+            });
+            
+            pageImage.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const touch1 = e.touches[0];
+                    const touch2 = e.touches[1];
+                    const currentDistance = Math.hypot(
+                        touch2.clientX - touch1.clientX,
+                        touch2.clientY - touch1.clientY
+                    );
+                    
+                    config.zoom = Math.max(0.1, Math.min(3.0, 
+                        touchStartZoom * (currentDistance / touchStartDistance)));
+                    updateImageTransform();
+                }
+            });
+            
+            pageImage.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                config.zoom = 1.0;
+                config.translateX = 0;
+                config.translateY = 0;
+                updateImageTransform();
+            });
+            
+            window.addEventListener('resize', () => {
+                if (config.currentFitMode === 'width') {
+                    setFitMode('width');
+                }
+            });
+        }
+        
+        window.addEventListener('DOMContentLoaded', init);
+        
+        document.addEventListener('fullscreenchange', () => {
+            const fullscreenBtn = document.getElementById('fullscreen');
+            fullscreenBtn.textContent = document.fullscreenElement ? '⛶' : '⛶';
+        });
+        
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash;
+            if (hash.startsWith('#page=')) {
+                const pageNum = parseInt(hash.substring(6));
+                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= config.pages.length) {
+                    loadPage(pageNum - 1);
+                }
+            }
+        });
+        
+        if (window.location.hash.startsWith('#page=')) {
+            const pageNum = parseInt(window.location.hash.substring(6));
+            if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= config.pages.length) {
+                config.currentPage = pageNum - 1;
+            }
+        }
+    </script>
+</body>
+</html>

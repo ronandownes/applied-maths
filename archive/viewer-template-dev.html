@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>__BOOK_NAME__ - Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { touch-action: pan-x pan-y; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+        :fullscreen { width: 100% !important; height: 100% !important; }
+        
+        .toc-toggle-fixed {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            z-index: 2000;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 8px 6px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .toc-toggle-fixed:hover { background: #0080ff; padding-left: 10px; }
+        
+        .toc-sidebar {
+            width: 260px;
+            background: #222;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, width 0.3s;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+        .toc-collapsed .toc-sidebar { transform: translateX(-260px); width: 0; }
+        
+        .toc-header {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toc-header h2 { font-size: 14px; color: #fff; }
+        .toc-close {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+        .toc-close:hover { background: #333; }
+        
+        .toc-content { flex: 1; overflow-y: auto; padding: 6px; }
+        
+        .toc-chapter { margin-bottom: 4px; border-radius: 3px; overflow: hidden; }
+        .toc-chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 8px;
+            background: #2a2a2a;
+            cursor: pointer;
+            user-select: none;
+        }
+        .toc-chapter-header:hover { background: #333; }
+        .chapter-expand { color: #66b3ff; font-size: 11px; width: 14px; transition: transform 0.2s; }
+        .chapter-expand.expanded { transform: rotate(90deg); }
+        .chapter-number { color: #66b3ff; font-weight: bold; font-size: 11px; min-width: 28px; }
+        .toc-chapter-title { font-weight: bold; font-size: 11px; flex: 1; }
+        
+        .toc-sections { max-height: 0; overflow: hidden; transition: max-height 0.3s; background: #222; }
+        .toc-chapter.expanded .toc-sections { max-height: 1000px; }
+        
+        .toc-section {
+            padding: 5px 8px 5px 40px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            gap: 6px;
+        }
+        .toc-section:hover { background: #2a2a2a; }
+        .toc-section.active { background: #333; color: #fff; }
+        .section-number { color: #666; font-size: 9px; min-width: 28px; }
+        
+        .viewer { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .controls {
+            background: #222;
+            padding: 4px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+            z-index: 100;
+            touch-action: manipulation;
+        }
+        
+        button {
+            background: #333;
+            border: 1px solid #444;
+            color: #ccc;
+            padding: 4px 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            min-width: 20px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover { background: #444; }
+        button.active { background: #0066cc; border-color: #0080ff; color: #fff; }
+        button.copied { background: #2e7d32 !important; }
+        
+        .page-info { display: flex; align-items: baseline; font-size: 10px; gap: 1px; margin: 0 3px; }
+        #current-page { cursor: pointer; padding: 2px 3px; border-radius: 2px; min-width: 14px; text-align: center; }
+        #current-page:hover { background: #444; }
+        .page-slash { color: #555; font-size: 9px; }
+        #total-pages { color: #666; font-size: 8px; }
+        
+        .page-input-inline {
+            width: 28px;
+            padding: 2px;
+            font-size: 10px;
+            text-align: center;
+            background: #1a1a1a;
+            border: 1px solid #0066cc;
+            border-radius: 2px;
+            color: #e0e0e0;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        .page-input-inline::-webkit-outer-spin-button,
+        .page-input-inline::-webkit-inner-spin-button { -webkit-appearance: none; }
+        
+        .sep { width: 1px; height: 14px; background: #444; margin: 0 3px; }
+        
+        .copy-link-btn { position: relative; }
+        .copy-link-tooltip {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2e7d32;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .copy-link-tooltip.show { opacity: 1; }
+        
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: auto;
+            background: #1a1a1a;
+            position: relative;
+            touch-action: none;
+        }
+        .image-container.fit-height { align-items: center; }
+        .image-container.fit-height img { height: 100% !important; width: auto !important; max-width: 100%; object-fit: contain; }
+        .image-container.fit-width img { width: 100% !important; height: auto !important; object-fit: contain; }
+        
+        #page-image { display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.5); transition: transform 0.1s; }
+        
+        .nav-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; pointer-events: none; z-index: 50; }
+        .nav-left, .nav-right { flex: 1; pointer-events: auto; cursor: pointer; opacity: 0; }
+        .nav-left:hover { background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent); opacity: 1; }
+        .nav-right:hover { background: linear-gradient(270deg, rgba(0,0,0,0.15), transparent); opacity: 1; }
+        
+        .zoom-indicator {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            display: none;
+            z-index: 100;
+        }
+        
+        /* Export Dialog - inline style */
+        .export-dialog {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 5000;
+            justify-content: center;
+            align-items: center;
+        }
+        .export-dialog.active { display: flex; }
+        
+        .export-box {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .export-box label { font-size: 12px; color: #ccc; }
+        
+        .export-box input {
+            width: 50px;
+            padding: 6px;
+            font-size: 12px;
+            text-align: center;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 3px;
+            color: #e0e0e0;
+            -moz-appearance: textfield;
+        }
+        .export-box input::-webkit-outer-spin-button,
+        .export-box input::-webkit-inner-spin-button { -webkit-appearance: none; }
+        .export-box input:focus { border-color: #0066cc; outline: none; }
+        
+        .export-box button {
+            padding: 6px 14px;
+            height: auto;
+            background: #0066cc;
+            border-color: #0066cc;
+            color: #fff;
+        }
+        .export-box button:hover { background: #0077ee; }
+        
+        /* Progress */
+        .progress-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 6000;
+            justify-content: center;
+            align-items: center;
+        }
+        .progress-overlay.active { display: flex; }
+        .progress-box { background: #252525; padding: 20px; border-radius: 6px; text-align: center; }
+        .progress-text { margin-bottom: 10px; font-size: 13px; }
+        .progress-bar { width: 180px; height: 5px; background: #333; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #0066cc; width: 0%; transition: width 0.2s; }
+        
+        .image-container::-webkit-scrollbar { width: 5px; height: 5px; }
+        .image-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .image-container { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
+        
+        .no-toc { text-align: center; padding: 20px; color: #666; font-style: italic; font-size: 11px; }
+        
+        @media (max-width: 500px) {
+            .toc-sidebar { width: 220px; }
+            .toc-collapsed .toc-sidebar { transform: translateX(-220px); }
+            .controls { padding: 3px; gap: 1px; }
+            button { padding: 3px 4px; min-width: 18px; height: 20px; font-size: 10px; }
+            .page-info { font-size: 9px; }
+            .export-box { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
+</head>
+<body class="toc-collapsed">
+    <button class="toc-toggle-fixed" id="toc-toggle-fixed" title="Contents (T)">📖</button>
+
+    <div class="toc-sidebar">
+        <div class="toc-header">
+            <h2>Contents</h2>
+            <button class="toc-close" id="toc-close">×</button>
+        </div>
+        <div class="toc-content" id="toc-content"></div>
+    </div>
+
+    <div class="viewer">
+        <div class="controls">
+            <span class="page-info">
+                <span id="current-page" title="Go to page">1</span>
+                <span class="page-slash">/</span>
+                <span id="total-pages">0</span>
+            </span>
+            <span class="sep"></span>
+            <button id="fit-height" title="Fit Height (H)" class="active">↕</button>
+            <button id="fit-width" title="Fit Width (W)">↔</button>
+            <span class="sep"></span>
+            <button id="zoom-out" title="Zoom Out">−</button>
+            <button id="zoom-in" title="Zoom In">+</button>
+            <button id="zoom-reset" title="Reset">⟲</button>
+            <span class="sep"></span>
+            <button id="export-btn" title="Export PDF (E)">📥</button>
+            <button id="copy-link" class="copy-link-btn" title="Copy Link">📎<span class="copy-link-tooltip">Copied!</span></button>
+            <button id="fullscreen" title="Fullscreen (F)">⛶</button>
+        </div>
+
+        <div class="image-container" id="image-container">
+            <div class="nav-overlay">
+                <div class="nav-left" id="nav-left"></div>
+                <div class="nav-right" id="nav-right"></div>
+            </div>
+            <img id="page-image" src="" alt="Page">
+            <div class="zoom-indicator" id="zoom-indicator"></div>
+        </div>
+    </div>
+
+    <!-- Simple Export Dialog -->
+    <div class="export-dialog" id="export-dialog">
+        <div class="export-box">
+            <label>From:</label>
+            <input type="text" id="export-from" inputmode="numeric">
+            <label>To:</label>
+            <input type="text" id="export-to" inputmode="numeric">
+            <button id="export-go">Export PDF</button>
+        </div>
+    </div>
+
+    <div class="progress-overlay" id="progress-overlay">
+        <div class="progress-box">
+            <div class="progress-text" id="progress-text">Creating PDF...</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <script>
+        const config = {
+            pages: __PAGES__,
+            imgBase: __IMG_BASE__,
+            toc: __TOC__,
+            currentPage: 0,
+            zoom: 1.0,
+            isPanning: false,
+            startX: 0, startY: 0,
+            translateX: 0, translateY: 0,
+            baseImgWidth: 0, baseImgHeight: 0,
+            currentFitMode: localStorage.getItem('fitMode') || 'height',
+            expandedChapters: JSON.parse(localStorage.getItem('expandedChapters') || '{}')
+        };
+        
+        const $ = id => document.getElementById(id);
+        const pageImage = $('page-image');
+        const imageContainer = $('image-container');
+        const zoomIndicator = $('zoom-indicator');
+        const exportDialog = $('export-dialog');
+        const exportFrom = $('export-from');
+        const exportTo = $('export-to');
+        
+        function init() {
+            $('total-pages').textContent = config.pages.length;
+            loadPage(config.currentPage);
+            renderTOC();
+            setupEvents();
+            const s = localStorage.getItem('currentPage');
+            if (s) { const n = parseInt(s); if (n >= 0 && n < config.pages.length) loadPage(n); }
+            setFitMode(config.currentFitMode);
+            if (localStorage.getItem('tocVisible') === 'true') toggleTOC(true);
+            if (config.toc.chapters?.length) setTimeout(() => toggleTOC(true), 100);
+        }
+        
+        function toggleTOC(show) {
+            if (show === undefined) show = document.body.classList.contains('toc-collapsed');
+            document.body.classList.toggle('toc-collapsed', !show);
+            localStorage.setItem('tocVisible', show);
+        }
+        
+        function setFitMode(mode) {
+            config.currentFitMode = mode;
+            imageContainer.classList.remove('fit-height', 'fit-width');
+            imageContainer.classList.add('fit-' + mode);
+            $('fit-height').classList.toggle('active', mode === 'height');
+            $('fit-width').classList.toggle('active', mode === 'width');
+            config.zoom = 1; config.translateX = config.translateY = 0;
+            updateTransform();
+            localStorage.setItem('fitMode', mode);
+        }
+        
+        function loadPage(idx) {
+            if (idx < 0 || idx >= config.pages.length) return;
+            config.currentPage = idx;
+            pageImage.src = config.imgBase ? `${config.imgBase}/${config.pages[idx]}` : config.pages[idx];
+            $('current-page').textContent = idx + 1;
+            config.zoom = 1; config.translateX = config.translateY = 0;
+            updateTransform();
+            imageContainer.scrollTop = imageContainer.scrollLeft = 0;
+            updateActiveTOC();
+            localStorage.setItem('currentPage', idx);
+        }
+        
+        pageImage.onload = () => { config.baseImgWidth = pageImage.offsetWidth; config.baseImgHeight = pageImage.offsetHeight; };
+        
+        function renderTOC() {
+            const c = $('toc-content');
+            if (!config.toc.chapters?.length) { c.innerHTML = '<div class="no-toc">No contents</div>'; return; }
+            let h = '';
+            config.toc.chapters.forEach((ch, i) => {
+                const exp = config.expandedChapters[i] || (i === 0 && !Object.keys(config.expandedChapters).length);
+                h += `<div class="toc-chapter ${exp?'expanded':''}" data-index="${i}">
+                    <div class="toc-chapter-header">
+                        <span class="chapter-expand ${exp?'expanded':''}">▶</span>
+                        <div class="chapter-number">${ch.code||''}</div>
+                        <div class="toc-chapter-title" data-start="${ch.start-1}">${ch.title}</div>
+                    </div><div class="toc-sections">`;
+                (ch.sections||[]).forEach(s => {
+                    h += `<div class="toc-section" data-start="${s.start-1}"><div class="section-number">${s.code||''}</div><div>${s.title}</div></div>`;
+                });
+                h += '</div></div>';
+            });
+            c.innerHTML = h;
+            c.querySelectorAll('.toc-chapter-header').forEach(el => {
+                el.onclick = e => {
+                    const ch = el.parentElement, idx = +ch.dataset.index;
+                    if (e.target.classList.contains('chapter-expand') || e.target.classList.contains('chapter-number')) {
+                        ch.classList.toggle('expanded');
+                        el.querySelector('.chapter-expand').classList.toggle('expanded');
+                        config.expandedChapters[idx] = ch.classList.contains('expanded');
+                        localStorage.setItem('expandedChapters', JSON.stringify(config.expandedChapters));
+                    } else {
+                        const st = +el.querySelector('.toc-chapter-title').dataset.start;
+                        if (!isNaN(st)) { loadPage(st); toggleTOC(false); }
+                    }
+                };
+            });
+            c.querySelectorAll('.toc-section').forEach(el => {
+                el.onclick = () => { const st = +el.dataset.start; if (!isNaN(st)) { loadPage(st); toggleTOC(false); } };
+            });
+        }
+        
+        function updateActiveTOC() {
+            document.querySelectorAll('.toc-section').forEach(el => el.classList.remove('active'));
+            let active = null, minD = Infinity;
+            document.querySelectorAll('.toc-section').forEach(el => {
+                const st = +el.dataset.start;
+                if (!isNaN(st) && config.currentPage >= st && config.currentPage - st < minD) { minD = config.currentPage - st; active = el; }
+            });
+            if (active) { active.classList.add('active'); setTimeout(() => active.scrollIntoView({ block: 'center', behavior: 'smooth' }), 100); }
+        }
+        
+        function showExportDialog() {
+            exportFrom.value = config.currentPage + 1;
+            exportTo.value = config.currentPage + 1;
+            exportDialog.classList.add('active');
+            exportFrom.focus();
+            exportFrom.select();
+        }
+        
+        function hideExportDialog() {
+            exportDialog.classList.remove('active');
+        }
+        
+        async function doExport() {
+            let from = parseInt(exportFrom.value) || 1;
+            let to = parseInt(exportTo.value) || from;
+            from = Math.max(1, Math.min(config.pages.length, from));
+            to = Math.max(from, Math.min(config.pages.length, to));
+            
+            hideExportDialog();
+            $('progress-overlay').classList.add('active');
+            $('progress-fill').style.width = '0%';
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const pages = [];
+                for (let i = from - 1; i < to; i++) pages.push(i);
+                
+                const first = await loadImg(pages[0]);
+                const pdf = new jsPDF({ orientation: first.w > first.h ? 'l' : 'p', unit: 'px', format: [first.w, first.h] });
+                
+                for (let i = 0; i < pages.length; i++) {
+                    $('progress-text').textContent = `${i+1} / ${pages.length}`;
+                    $('progress-fill').style.width = ((i+1)/pages.length*100)+'%';
+                    const img = await loadImg(pages[i]);
+                    if (i > 0) pdf.addPage([img.w, img.h], img.w > img.h ? 'l' : 'p');
+                    pdf.addImage(img.data, 'JPEG', 0, 0, img.w, img.h);
+                }
+                
+                pdf.save(`pages-${from}-${to}.pdf`);
+            } catch (e) { alert('Error: ' + e.message); }
+            
+            $('progress-overlay').classList.remove('active');
+        }
+        
+        function loadImg(idx) {
+            return new Promise((res, rej) => {
+                const img = new Image();
+                const src = config.imgBase ? `${config.imgBase}/${config.pages[idx]}` : config.pages[idx];
+                
+                img.onload = () => {
+                    try {
+                        const c = document.createElement('canvas');
+                        c.width = img.naturalWidth; c.height = img.naturalHeight;
+                        c.getContext('2d').drawImage(img, 0, 0);
+                        res({ w: img.naturalWidth, h: img.naturalHeight, data: c.toDataURL('image/jpeg', 0.92) });
+                    } catch (e) {
+                        rej(new Error(`Canvas error on page ${idx + 1}: ${e.message}`));
+                    }
+                };
+                img.onerror = () => rej(new Error(`Failed to load page ${idx + 1}`));
+                img.src = src;
+            });
+        }
+        
+        function constrainPan() {
+            if (config.zoom <= 1) { config.translateX = config.translateY = 0; return; }
+            const cw = imageContainer.clientWidth, ch = imageContainer.clientHeight;
+            const iw = config.baseImgWidth || cw, ih = config.baseImgHeight || ch;
+            const ox = Math.max(0, (iw * config.zoom - cw) / 2), oy = Math.max(0, (ih * config.zoom - ch) / 2);
+            config.translateX = Math.max(-ox, Math.min(ox, config.translateX));
+            config.translateY = Math.max(-oy, Math.min(oy, config.translateY));
+        }
+        
+        function updateTransform() {
+            constrainPan();
+            pageImage.style.transform = `translate(${config.translateX}px,${config.translateY}px) scale(${config.zoom})`;
+            if (config.zoom !== 1) {
+                zoomIndicator.textContent = Math.round(config.zoom * 100) + '%';
+                zoomIndicator.style.display = 'block';
+                setTimeout(() => zoomIndicator.style.display = 'none', 800);
+            }
+        }
+        
+        function showPageInput() {
+            const inp = document.createElement('input');
+            inp.type = 'text'; inp.inputMode = 'numeric';
+            inp.className = 'page-input-inline'; inp.value = config.currentPage + 1;
+            inp.onkeydown = e => { if (e.key === 'Enter') submitPage(inp); else if (e.key === 'Escape') hidePage(inp); };
+            inp.onblur = () => submitPage(inp);
+            const span = $('current-page');
+            span.style.display = 'none';
+            span.parentNode.insertBefore(inp, span);
+            inp.focus(); inp.select();
+        }
+        function hidePage(inp) { $('current-page').style.display = ''; inp?.remove(); }
+        function submitPage(inp) { const n = parseInt(inp.value); if (n >= 1 && n <= config.pages.length) loadPage(n - 1); hidePage(inp); }
+        
+        function copyLink() {
+            const url = new URL(location.href); url.hash = `#page=${config.currentPage + 1}`;
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                $('copy-link').classList.add('copied');
+                document.querySelector('.copy-link-tooltip').classList.add('show');
+                setTimeout(() => { $('copy-link').classList.remove('copied'); document.querySelector('.copy-link-tooltip').classList.remove('show'); }, 1200);
+            });
+        }
+        
+        function toggleFS() {
+            const d = document, e = document.documentElement;
+            if (!d.fullscreenElement && !d.webkitFullscreenElement) (e.requestFullscreen || e.webkitRequestFullscreen).call(e);
+            else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+        }
+        
+        function setupEvents() {
+            $('toc-toggle-fixed').onclick = () => toggleTOC();
+            $('toc-close').onclick = () => toggleTOC(false);
+            $('fit-height').onclick = () => setFitMode('height');
+            $('fit-width').onclick = () => setFitMode('width');
+            $('zoom-in').onclick = () => { config.zoom = Math.min(3, config.zoom + 0.15); updateTransform(); };
+            $('zoom-out').onclick = () => { config.zoom = Math.max(0.2, config.zoom - 0.15); updateTransform(); };
+            $('zoom-reset').onclick = () => { config.zoom = 1; config.translateX = config.translateY = 0; updateTransform(); };
+            $('export-btn').onclick = showExportDialog;
+            $('copy-link').onclick = copyLink;
+            $('fullscreen').onclick = toggleFS;
+            $('current-page').onclick = showPageInput;
+            $('nav-left').onclick = () => loadPage(config.currentPage - 1);
+            $('nav-right').onclick = () => loadPage(config.currentPage + 1);
+            
+            $('export-go').onclick = doExport;
+            exportFrom.onkeydown = e => { if (e.key === 'Enter') { exportTo.focus(); exportTo.select(); } else if (e.key === 'Escape') hideExportDialog(); };
+            exportTo.onkeydown = e => { if (e.key === 'Enter') doExport(); else if (e.key === 'Escape') hideExportDialog(); };
+            exportDialog.onclick = e => { if (e.target === exportDialog) hideExportDialog(); };
+            
+            document.onkeydown = e => {
+                if (e.target.tagName === 'INPUT') return;
+                if (e.key === 'ArrowLeft') { e.preventDefault(); loadPage(config.currentPage - 1); }
+                else if (e.key === 'ArrowRight') { e.preventDefault(); loadPage(config.currentPage + 1); }
+                else if (e.key === 'h' || e.key === 'H') setFitMode('height');
+                else if (e.key === 'w' || e.key === 'W') setFitMode('width');
+                else if (e.key === 't' || e.key === 'T') toggleTOC();
+                else if (e.key === 'e' || e.key === 'E') showExportDialog();
+                else if (e.key === 'f' || e.key === 'F') toggleFS();
+                else if (e.key === 'Escape') hideExportDialog();
+            };
+            
+            document.addEventListener('wheel', e => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    config.zoom = Math.max(0.2, Math.min(3, config.zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
+                    updateTransform();
+                }
+            }, { passive: false });
+            
+            document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+            ['gesturestart', 'gesturechange', 'gestureend'].forEach(ev => document.addEventListener(ev, e => e.preventDefault()));
+            
+            pageImage.onmousedown = e => {
+                if (config.zoom > 1) {
+                    e.preventDefault();
+                    config.isPanning = true;
+                    config.startX = e.clientX - config.translateX;
+                    config.startY = e.clientY - config.translateY;
+                    pageImage.style.cursor = 'grabbing';
+                }
+            };
+            document.onmousemove = e => {
+                if (config.isPanning) {
+                    config.translateX = e.clientX - config.startX;
+                    config.translateY = e.clientY - config.startY;
+                    updateTransform();
+                }
+            };
+            document.onmouseup = () => { config.isPanning = false; pageImage.style.cursor = ''; };
+            
+            let ts = {}, pan = false;
+            pageImage.ontouchstart = e => {
+                if (e.touches.length === 1 && config.zoom > 1) {
+                    pan = true; ts = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: config.translateX, ty: config.translateY };
+                } else if (e.touches.length === 2) {
+                    pan = false; e.preventDefault();
+                    config.touchDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+                    config.touchZoom = config.zoom;
+                }
+            };
+            pageImage.ontouchmove = e => {
+                if (e.touches.length === 1 && pan && config.zoom > 1) {
+                    e.preventDefault();
+                    config.translateX = ts.tx + e.touches[0].clientX - ts.x;
+                    config.translateY = ts.ty + e.touches[0].clientY - ts.y;
+                    updateTransform();
+                } else if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const d = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+                    config.zoom = Math.max(0.2, Math.min(3, config.touchZoom * (d / config.touchDist)));
+                    updateTransform();
+                }
+            };
+            pageImage.ontouchend = () => pan = false;
+            pageImage.ondblclick = () => { config.zoom = 1; config.translateX = config.translateY = 0; updateTransform(); };
+        }
+        
+        window.onload = init;
+        window.onhashchange = () => { const m = location.hash.match(/^#page=(\d+)$/); if (m) loadPage(+m[1] - 1); };
+        if (location.hash.startsWith('#page=')) { const n = parseInt(location.hash.slice(6)); if (!isNaN(n)) config.currentPage = n - 1; }
+    </script>
+</body>
+</html>

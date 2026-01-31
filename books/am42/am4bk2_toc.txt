@@ -1,0 +1,129 @@
+# Active Maths 4 Book 2 - Table of Contents
+# Leaving Certificate Higher Level
+# offset is 10
+
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=4
+CHAPTER|TOC|Table of Contents|TOC.0|start=5|end=8
+CHAPTER|INTRO|Introduction|INTRO.0|start=9|end=10
+
+CHAPTER|01|Statistics I|CH01.0|start=11|end=43
+SECTION|1.1|Statistical Investigations|start=12|end=14
+SECTION|1.2|Sample Surveys|start=15|end=23
+SECTION|1.3|Collecting Data|start=24|end=27
+SECTION|1.4|Tables|start=28|end=32
+SECTION|1.5|Graphing Data|start=33|end=37
+SECTION|1.6|Scatter Graphs and Correlation|start=38|end=42
+SECTION|1.7|Linear Regression|start=43|end=43
+SECTION|1.A|Answers|start=387|end=387|end_inclusive=true
+
+CHAPTER|02|Probability I|CH02.0|start=54|end=74
+SECTION|2.1|Fundamental Principle of Counting|start=55|end=57
+SECTION|2.2|Permutations and Combinations|start=58|end=61
+SECTION|2.3|Probability Basics|start=62|end=64
+SECTION|2.4|Relative Frequency|start=65|end=66
+SECTION|2.5|Equally Likely Outcomes|start=67|end=68
+SECTION|2.6|Mutually Exclusive and Non-Mutually Exclusive Events|start=69|end=71
+SECTION|2.7|Conditional Probability|start=72|end=74
+SECTION|2.A|Answers|start=388|end=388|end_inclusive=true
+
+CHAPTER|03|Probability II|CH03.0|start=85|end=110
+SECTION|3.1|Events in Succession|start=86|end=88
+SECTION|3.2|Independent Events|start=89|end=91
+SECTION|3.3|Tree Diagrams|start=92|end=94
+SECTION|3.4|Expected Value|start=95|end=96
+SECTION|3.5|Binomial Distribution|start=97|end=100
+SECTION|3.6|Normal Distribution|start=101|end=110
+SECTION|3.A|Answers|start=389|end=389|end_inclusive=true
+
+CHAPTER|04|Statistics II|CH04.0|start=121|end=140
+SECTION|4.1|Measures of Centre|start=122|end=126
+SECTION|4.2|Measures of Variation|start=127|end=133
+SECTION|4.3|Standard Deviation|start=134|end=138
+SECTION|4.4|Relative Standing|start=139|end=140
+SECTION|4.A|Answers|start=390|end=390|end_inclusive=true
+
+CHAPTER|05|Statistics III|CH05.0|start=151|end=163
+SECTION|5.1|Sampling and Central Limit Theorem|start=152|end=155
+SECTION|5.2|Confidence Intervals|start=156|end=159
+SECTION|5.3|Hypothesis Testing|start=160|end=163
+SECTION|5.A|Answers|start=391|end=391|end_inclusive=true
+
+CHAPTER|06|Geometry I|CH06.0|start=174|end=182
+SECTION|6.1|Basic Concepts|start=175|end=177
+SECTION|6.2|Angles and Lines|start=178|end=180
+SECTION|6.3|Areas of Triangles and Parallelograms|start=181|end=182
+SECTION|6.A|Answers|start=392|end=392|end_inclusive=true
+
+CHAPTER|07|Trigonometry|CH07.0|start=215|end=265
+SECTION|7.1|Right-Angled Triangles and Ratios|start=216|end=219
+SECTION|7.2|Sine and Cosine Rules|start=220|end=223
+SECTION|7.3|Radian Measure|start=224|end=226
+SECTION|7.4|Trigonometric Functions|start=227|end=238
+SECTION|7.5|Trigonometric Identities and Equations|start=239|end=245
+SECTION|7.6|3D and Applications|start=246|end=265
+SECTION|7.A|Answers|start=393|end=393|end_inclusive=true
+
+CHAPTER|08|Co-ordinate Geometry I – The Line|CH08.0|start=276|end=290
+SECTION|8.1|Revision of Formulae|start=277|end=278
+SECTION|8.2|Equation of a Line|start=279|end=281
+SECTION|8.3|Parallel and Perpendicular Lines|start=282|end=285
+SECTION|8.4|Area of a Triangle|start=286|end=287
+SECTION|8.5|Perpendicular Distance|start=288|end=289
+SECTION|8.6|Angle Between Two Lines|start=290|end=290
+SECTION|8.A|Answers|start=394|end=394|end_inclusive=true
+
+CHAPTER|09|Co-ordinate Geometry II – The Circle|CH09.0|start=301|end=319
+SECTION|9.1|Circles with Centre (0, 0)|start=302|end=304
+SECTION|9.2|General Equation of a Circle|start=305|end=308
+SECTION|9.3|Intersection of Line and Circle|start=309|end=312
+SECTION|9.4|Tangents to Circles|start=313|end=316
+SECTION|9.5|Loci Problems|start=317|end=319
+SECTION|9.A|Answers|start=395|end=395|end_inclusive=true
+
+CHAPTER|10|Geometry II – Proofs|CH10.0|start=330|end=340
+SECTION|10.1|Proofs I|start=331|end=334
+SECTION|10.2|Proofs II|start=335|end=340
+SECTION|10.A|Answers|start=396|end=396|end_inclusive=true
+
+CHAPTER|11|Constructions|CH11.0|start=351|end=365
+SECTION|11.1|Introduction|start=352|end=354
+SECTION|11.2|LC Higher Level Constructions|start=355|end=365
+SECTION|11.A|Answers|start=397|end=397|end_inclusive=true
+
+CHAPTER|12|Enlargements|CH12.0|start=368|end=370
+SECTION|12.1|Transformations|start=369|end=369
+SECTION|12.2|Properties of Enlargements|start=370|end=370
+SECTION|12.A|Answers|start=398|end=398|end_inclusive=true
+
+
+SECTION|1.A|Answers|start=387|end=388|end_inclusive=true
+SECTION|2.A|Answers|start=389|end=389|end_inclusive=true
+SECTION|3.A|Answers|start=390|end=390|end_inclusive=true
+SECTION|4.A|Answers|start=391|end=392|end_inclusive=true
+SECTION|5.A|Answers|start=393|end=394|end_inclusive=true
+SECTION|6.A|Answers|start=395|end=395|end_inclusive=true
+SECTION|7.A|Answers|start=396|end=396|end_inclusive=true
+SECTION|8.A|Answers|start=397|end=398|end_inclusive=true
+SECTION|9.A|Answers|start=399|end=400|end_inclusive=true
+SECTION|10.A|Answers|start=401|end=402|end_inclusive=true
+SECTION|11.A|Answers|start=403|end=404|end_inclusive=true
+SECTION|12.A|Answers|start=405|end=406|end_inclusive=true
+CHAPTER|BACKCOVER|End Pages / Credits|start=540|end=540|end_inclusive=true
+CHAPTER|BOOK1|Continue to Active Maths 4 Book 1|am4bk1/index.html|start=1|end=1|end_inclusive=true
+
+
+
+
+
+
+# delete below
+
+# Additional Answer Pages
+SECTION|A1|Answers (Statistics I–III)|start=387|end=391|end_inclusive=true
+SECTION|A2|Answers (Geometry I–II)|start=392|end=396|end_inclusive=true
+SECTION|A3|Answers (Constructions & Enlargements)|start=397|end=398|end_inclusive=true
+
+CHAPTER|BACKCOVER|End Pages / Credits|start=540|end=540|end_inclusive=true
+
+# Cross-link to Book 1
+CHAPTER|BOOK1|Continue to Active Maths 4 Book 1|am4bk1/index.html|start=1|end=1|end_inclusive=true

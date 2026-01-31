@@ -1,0 +1,104 @@
+# Text & Tests 5 (New Edition) – Table of Contents
+# Page numbering uses natural PDF page order only
+
+# Front Matter
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=4
+CHAPTER|TOC|Table of Contents|TOC.0|start=5|end=7
+
+# Main Content
+CHAPTER|01|Complex Numbers|CH01.0|start=9|end=42
+SECTION|1.1|Irrational Numbers|start=9|end=12
+SECTION|1.2|Complex Numbers|start=13|end=13
+SECTION|1.3|Division and Equality of Complex Numbers|start=14|end=15
+SECTION|1.4|Argand Diagram – Modulus|start=16|end=17
+SECTION|1.5|Transformations of Complex Numbers|start=18|end=21
+SECTION|1.6|Conjugate Roots Theorem|start=22|end=24
+SECTION|1.7|Polar Form of a Complex Number|start=25|end=28
+SECTION|1.8|Products and Quotients of Complex Numbers in Polar Form|start=29|end=30
+SECTION|1.9|De Moivre’s Theorem|start=31|end=33
+SECTION|1.10|Applications of De Moivre’s Theorem|start=34|end=37
+SECTION||Revision Exercises|start=38|end=42
+
+CHAPTER|02|Geometry 2: Enlargements and Constructions|CH02.0|start=43|end=65
+SECTION|2.1|Enlargements|start=43|end=49
+SECTION|2.2|Constructions|start=50|end=58
+SECTION||Revision Exercises|start=59|end=65
+
+CHAPTER|03|Integration|CH03.0|start=66|end=100
+SECTION|3.1|Antidifferentiation|start=66|end=70
+SECTION|3.2|Integrating Exponential and Trigonometric Functions|start=71|end=74
+SECTION|3.3|Applications of Integration|start=75|end=76
+SECTION|3.4|Definite Integrals|start=77|end=80
+SECTION|3.5|Finding Areas by Integration|start=81|end=88
+SECTION|3.6|Average Value of a Function|start=89|end=93
+SECTION||Revision Exercises|start=94|end=100
+
+CHAPTER|04|Applications of Differential Calculus|CH04.0|start=101|end=140
+SECTION|4.1|Tangents: Increasing and Decreasing Functions|start=101|end=105
+SECTION|4.2|Stationary Points|start=106|end=111
+SECTION|4.3|Graphs of the Derived (or Slope) Function|start=112|end=116
+SECTION|4.4|Maximum and Minimum Problems|start=117|end=123
+SECTION|4.5|Rates of Change|start=124|end=127
+SECTION|4.6|Related Rates of Change|start=128|end=131
+SECTION||Revision Exercises|start=132|end=140
+
+CHAPTER|05|Financial Maths|CH05.0|start=141|end=162
+SECTION|5.1|Compound Interest|start=141|end=145
+SECTION|5.2|Depreciation|start=146|end=148
+SECTION|5.3|Instalment Savings (Annuities)|start=149|end=155
+SECTION|5.4|Loans – Mortgages|start=156|end=157
+SECTION||Revision Exercises|start=158|end=162
+
+CHAPTER|06|Length, Area, Volume|CH06.0|start=163|end=194
+SECTION|6.1|Revision|start=163|end=167
+SECTION|6.2|Sectors of Circles|start=168|end=172
+SECTION|6.3|Three-Dimensional Objects|start=173|end=180
+SECTION|6.4|Trapezoidal Rule for Calculating Area|start=181|end=185
+SECTION||Revision Exercises|start=186|end=194
+
+CHAPTER|07|Probability 2|CH07.0|start=195|end=229
+SECTION|7.1|Tree Diagrams|start=195|end=199
+SECTION|7.2|Probability Distributions: Expected Value|start=200|end=205
+SECTION|7.3|Bernoulli Trials: Binomial Distribution|start=206|end=211
+SECTION|7.4|How to Show Events Are Independent|start=212|end=215
+SECTION|7.5|Probability Involving Permutations and Combinations|start=216|end=218
+SECTION|7.6|Probability Simulations|start=219|end=222
+SECTION||Revision Exercises|start=223|end=229
+
+CHAPTER|08|Functions and Graphs|CH08.0|start=230|end=281
+SECTION|8.1|Introduction to Functions|start=230|end=238
+SECTION|8.2|Composition of Functions|start=239|end=241
+SECTION|8.3|Types of Functions|start=242|end=247
+SECTION|8.4|Inverse Functions|start=248|end=252
+SECTION|8.5|Sketching the Graphs of Functions|start=253|end=261
+SECTION|8.6|Exponential and Logarithmic Functions|start=262|end=268
+SECTION|8.7|Related Graphs|start=269|end=272
+SECTION||Revision Exercises|start=273|end=281
+
+CHAPTER|09|Statistics 2|CH09.0|start=282|end=314
+SECTION|9.1|Scatter Diagrams|start=282|end=287
+SECTION|9.2|Measuring Correlation: Line of Best Fit|start=288|end=294
+SECTION|9.3|The Normal Distribution|start=295|end=302
+SECTION|9.4|Normal Probability Distributions|start=303|end=308
+SECTION||Revision Exercises|start=309|end=314
+
+CHAPTER|10|Inferential Statistics|CH10.0|start=315|end=365
+SECTION|10.1|Confidence Interval for Population Proportion|start=315|end=322
+SECTION|10.2|Hypothesis Testing for Population Proportion|start=323|end=325
+SECTION|10.3|Sampling Distribution of the Mean: The Central Limit Theorem|start=326|end=333
+SECTION|10.4|Confidence Interval for a Population Mean|start=334|end=338
+SECTION|10.5|Hypothesis Testing for a Population Mean|start=339|end=345
+SECTION||Revision Exercises|start=346|end=365
+
+# Back Matter
+CHAPTER|ANSWERS|Answers|ANSWERS.0|start=366|end=500
+SECTION||Answers Chapter 1 – Complex Numbers|start=366|end=372
+SECTION||Answers Chapter 2 – Geometry 2|start=373|end=377
+SECTION||Answers Chapter 3 – Integration|start=378|end=384
+SECTION||Answers Chapter 4 – Applications of Differential Calculus|start=385|end=391
+SECTION||Answers Chapter 5 – Financial Maths|start=392|end=395
+SECTION||Answers Chapter 6 – Length, Area, Volume|start=396|end=401
+SECTION||Answers Chapter 7 – Probability 2|start=402|end=407
+SECTION||Answers Chapter 8 – Functions and Graphs|start=408|end=417
+SECTION||Answers Chapter 9 – Statistics 2|start=418|end=423
+SECTION||Answers Chapter 10 – Inferential Statistics|start=424|end=500

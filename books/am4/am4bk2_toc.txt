@@ -1,0 +1,139 @@
+# Active Maths 4 Book 1 (Leaving Certificate Higher Level) - Table of Contents
+# Use actual file page numbers
+
+# Front Matter
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=4
+CHAPTER|TOC|Table of Contents|TOC.0|start=5|end=8
+
+# Main Content  
+CHAPTER|01|Algebra I|CH01.0|start=9|end=24
+SECTION|1.1|Expressions|start=10|end=7
+SECTION|1.2|Factorising|start=8|end=9
+SECTION|1.3|Algebraic Fractions I: Addition and Subtraction|start=11|end=13
+SECTION|1.4|Algebraic Fractions II: Multiplication and Division|start=14|end=15
+SECTION|1.5|Binomial Expansions|start=16|end=19
+SECTION|1.6|Long Division in Algebra|start=20|end=24
+
+CHAPTER|02|Algebra II|CH02.0|start=25|end=62
+SECTION|2.1|Solving Linear Equations|start=26|end=28
+SECTION|2.2|Solving Simultaneous Linear Equations in Two Variables|start=29|end=32
+SECTION|2.3|Solving Simultaneous Equations in Three Variables|start=33|end=33
+SECTION|2.4|Solving Quadratic Equations|start=34|end=37
+SECTION|2.5|Simultaneous Equations: One Linear and One Non-Linear|start=38|end=42
+SECTION|2.6|The Factor Theorem|start=43|end=44
+SECTION|2.7|Manipulation of Formulae|start=47|end=48
+SECTION|2.8|Unknown Coefficients|start=49|end=50
+SECTION|2.9|Problem Solving Using Algebra|start=51|end=62
+
+CHAPTER|03|Algebra III|CH03.0|start=63|end=85
+SECTION|3.1|Surd Equations|start=64|end=64
+SECTION|3.2|Linear Inequalities|start=65|end=68
+SECTION|3.3|Quadratic and Rational Inequalities|start=69|end=72
+SECTION|3.4|Absolute Value (Modulus)|start=73|end=79
+SECTION|3.5|Inequalities: Proofs|start=80|end=80
+SECTION|3.6|Discriminants|start=81|end=85
+
+CHAPTER|04|Length, Area and Volume|CH04.0|start=86|end=108
+SECTION|4.1|Two-Dimensional (2D) Shapes|start=87|end=92
+SECTION|4.2|Rectangular Solids and Prisms|start=93|end=96
+SECTION|4.3|Cylinders, Cones, Spheres and Hemispheres|start=97|end=108
+
+CHAPTER|05|Real Numbers|CH05.0|start=109|end=123
+SECTION|5.1|Introduction|start=110|end=110
+SECTION|5.2|Factors, Multiples and Prime Factors|start=110|end=113
+SECTION|5.3|Integers and Rational Numbers|start=114|end=115
+SECTION|5.4|Irrational Numbers|start=116|end=118
+SECTION|5.5|Rounding and Significant Figures|start=119|end=120
+SECTION|5.6|Orders of Magnitude and Scientific Notation|start=121|end=123
+
+CHAPTER|06|Functions|CH06.0|start=124|end=174
+SECTION|6.1|Introduction|start=125|end=126
+SECTION|6.2|Functions as Mappings from One Set to Another|start=127|end=128
+SECTION|6.3|Composite Functions|start=129|end=132
+SECTION|6.4|Linear and Quadratic Functions|start=133|end-139
+SECTION|6.5|Expressing Quadratic Functions in Completed Square Form (Vertex Form)|start=140|end=142
+SECTION|6.6|Cubic Functions|start=143|end=146
+SECTION|6.7|Exponential Functions|start=147|end=151
+SECTION|6.8|Graphing Logarithmic Functions|start=152|end=153
+SECTION|6.9|Injective, Surjective and Bijective Functions|start=154|end=162
+SECTION|6.10|Inverse Functions|start=163|end=165
+SECTION|6.11|Graphs of Functions and their Inverses|start=166|end=174
+
+CHAPTER|07|Indices and Logarithms|CH07.0|start=175|end=193
+SECTION|7.1|Indices (Exponents)|start=176|end=176
+SECTION|7.2|Laws of Indices (Exponents)|start=177|end=178
+SECTION|7.3|Equations with x as an Index|start=179|end=180
+SECTION|7.4|Surds|start=181|end=182
+SECTION|7.5|Logarithms|start=183|end=188
+SECTION|7.6|Using Logarithms to Solve Practical Problems|start=189|end=193
+
+CHAPTER|08|Number Patterns, Sequences and Series|CH08.0|start=194|end=227
+SECTION|8.1|Patterns|start=195|end=197
+SECTION|8.2|Arithmetic Sequences|start=198|end=204
+SECTION|8.3|Arithmetic Series|start=205|end=208
+SECTION|8.4|Some Non-Linear Sequences|start=209|end=213
+SECTION|8.5|Geometric Sequences and Series|start=214|end=219
+SECTION|8.6|Infinite Series|start=220|end=227
+
+CHAPTER|09|Arithmetic|CH09.0|start=228|end=243
+SECTION|9.1|Approximation, Percentage Error and Tolerance|start=229|end=231
+SECTION|9.2|Costing: Materials, Labour and Wastage|start=232|end=236
+SECTION|9.3|Income Tax|start=237|end=240
+SECTION|9.4|VAT: Value-Added Tax|start=241|end=243
+
+CHAPTER|10|Financial Mathematics|CH10.0|start=244|end=268
+SECTION|10.1|Present Value|start=245|end=248
+SECTION|10.2|Compound Interest: Loans and Investments|start=249|end=254
+SECTION|10.3|Depreciation (Reducing-Balance Method)|start=255|end=258
+SECTION|10.4|Applications and Problems Involving Geometric Series|start=259|end=268
+
+CHAPTER|11|Proof by Induction|CH11.0|start=269|end=278
+SECTION|11.1|Introduction|start=270|end=270
+SECTION|11.2|Summations|start=270|end=270
+SECTION|11.3|Proof by Induction|start=271|end=271
+SECTION|11.4|Proofs Involving Series|start=272|end=273
+SECTION|11.5|Proofs Involving Divisibility|start=274|end=275
+SECTION|11.6|Inequalities|start=276|end=278
+
+CHAPTER|12|Complex Numbers|CH12.0|start=279|end=318
+SECTION|12.1|Introduction|start=280|end=281
+SECTION|12.2|The Argand Diagram and the Modulus of a Complex Number|start=282|end=284
+SECTION|12.3|Addition and Subtraction of Complex Numbers; Multiplication by a Real Number|start=285|end=289
+SECTION|12.4|Multiplication of Complex Numbers|start=290|end=291
+SECTION|12.5|Division of Complex Numbers|start=292|end=295
+SECTION|12.6|Quadratic Equations with Complex Roots|start=296|end=297
+SECTION|12.7|Polynomials with Complex Roots|start=298|end=301
+SECTION|12.8|Polar Form of a Complex Number|start=302|end=307
+SECTION|12.9|De Moivre's Theorem and Applications|start=308|end=310
+SECTION|12.10|De Moivre's Theorem for n ∈ Q|start=311|end=318
+
+CHAPTER|13|Differential Calculus I|CH13.0|start=319|end=353
+SECTION|13.1|Calculus|start=320|end=320
+SECTION|13.2|Limits and Continuity|start=320|end=324
+SECTION|13.3|Differentiation from First Principles|start=325|end=326
+SECTION|13.4|Differentiating Polynomial Functions and Functions with Rational Powers|start=327|end=330
+SECTION|13.5|The Chain Rule|start=331|end=334
+SECTION|13.6|The Product Rule and Quotient Rule|start=335|end=337
+SECTION|13.7|Trigonometric Functions|start=338|end=341
+SECTION|13.8|Differentiation of Inverse Trigonometric Functions|start=342|end=344
+SECTION|13.9|The Exponential Function and the Natural Logarithm Function|start=345|end=347
+SECTION|13.10|Implicit Differentiation|start=348|end=353
+
+CHAPTER|14|Differential Calculus II|CH14.0|start=354|end=384
+SECTION|14.1|The Second Derivative|start=355|end=356
+SECTION|14.2|Increasing and Decreasing Functions|start=357|end=362
+SECTION|14.3|Turning Points and Points of Inflection|start=363|end=370
+SECTION|14.4|Maximum and Minimum Problems|start=371|end=376
+SECTION|14.5|Rates of Change|start=377|end=384
+
+CHAPTER|15|Integral Calculus|CH15.0|start=385|end=422
+SECTION|15.1|Antiderivatives and the Indefinite Integral|start=386|end=388
+SECTION|15.2|Integrating Sums, Differences and Constant Multiples of Functions of the Form x^a Where a ∈ Q|start=389|end=393
+SECTION|15.3|Integrating Exponential and Trigonometric Functions|start=394|end=397
+SECTION|15.4|Definite Integrals|start=398|end=401
+SECTION|15.5|Area Under a Graph|start=402|end=409
+SECTION|15.6|Intersecting Curves and the Trapezoidal Rule|start=410|end=413
+SECTION|15.7|Average Value of a Function|start=414|end=422
+
+# Back Matter
+CHAPTER|ANSWERS|Answers|ANSWERS.0|start=423|end=500

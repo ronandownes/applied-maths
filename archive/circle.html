@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Circle / Disc</title>
+
+<style>
+:root{--ink:#000;--line:#cfcfcf;--muted:#666}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#fff;color:var(--ink)}
+.wrap{max-width:800px;margin:6px auto;padding:0 6px}
+.card{border:1px solid var(--line);border-radius:10px;padding:8px}
+
+/* CONTROLS */
+.controls{display:grid;grid-template-columns:1fr 200px;gap:6px;margin-bottom:6px}
+.right-col{display:flex;flex-direction:column;gap:6px}
+.block{border:1px solid var(--line);border-radius:8px;padding:6px}
+.block h3{margin:0 0 3px;font-size:12px}
+label{font-size:11px;color:var(--muted)}
+
+/* RADIUS SLIDER */
+.slider-wrap{position:relative;margin-top:6px;padding-bottom:18px}
+.slider-wrap input[type="range"]{width:100%;margin:0}
+.tick-marks{display:flex;justify-content:space-between;position:absolute;left:0;right:0;bottom:0;font-size:10px;pointer-events:none}
+.tick-marks span{width:20px;text-align:center}
+
+/* BUTTONS */
+.btnrow{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:4px}
+.btnrow button{border:1px solid var(--line);border-radius:5px;background:#fff;
+  font-size:10px;padding:2px;cursor:pointer;line-height:1.2}
+.btnrow button.active{background:#000;color:#fff}
+.unit-label{font-size:8px;display:block;color:var(--muted);margin-top:1px}
+.btnrow button.active .unit-label{color:#aaa}
+
+.dprow{display:flex;gap:3px;margin-top:4px}
+.dprow button{flex:1;border:1px solid var(--line);border-radius:5px;background:#fff;
+  font-size:11px;padding:3px;cursor:pointer}
+.dprow button.active{background:#000;color:#fff}
+
+/* SHAPE */
+.shape-title{font-family:"Times New Roman",Times,serif;font-size:20px;font-weight:700}
+.shape-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.shape-def{font-size:11px;color:var(--muted);margin-top:4px;font-style:italic;line-height:1.2}
+
+/* TOP - diagram and results side by side */
+.top{display:grid;grid-template-columns:280px 1fr;gap:10px;align-items:start}
+.diagram svg{width:100%;height:auto;display:block}
+.formulas{font-family:"Times New Roman",Times,serif;margin-top:6px}
+.formulas .f{font-size:18px;margin:2px 0}
+
+/* RESULTS - side by side */
+.results{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.calc{border:1px solid var(--line);border-radius:8px;padding:6px}
+.calc h2{margin:0 0 4px;font-size:13px}
+.line{font-family:"Times New Roman",Times,serif;font-size:15px;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.line .mut{color:var(--muted);font-family:Segoe UI,Arial,sans-serif;font-size:11px;margin-left:6px}
+
+/* Radius display */
+.radius-display{font-family:"Times New Roman",Times,serif;font-size:16px;margin-bottom:4px}
+
+@media(max-width:720px){
+  .controls{grid-template-columns:1fr}
+  .top{grid-template-columns:1fr}
+  .results{grid-template-columns:1fr}
+  .line{white-space:normal}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<section class="card">
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="block">
+    <h3>Radius</h3>
+    <div class="radius-display" id="radiusDisplay"><i>r</i> = 7</div>
+    <div class="slider-wrap">
+      <input id="radiusSlider" type="range" min="0" max="9" step="0.01" value="7">
+      <div class="tick-marks">
+        <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>
+        <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <div class="block">
+      <h3>Decimal places</h3>
+      <div class="dprow" id="dpBtns"></div>
+    </div>
+
+    <div class="block">
+      <h3>Units</h3>
+      <label style="margin-bottom:2px">Submultiples</label>
+      <div class="btnrow" id="unitBtnsSmall"></div>
+      <label style="margin:4px 0 2px">Multiples</label>
+      <div class="btnrow" id="unitBtnsLarge"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOP: Diagram + Results -->
+<div class="top">
+  <div class="diagram-area">
+    <div class="diagram">
+      <svg viewBox="0 0 260 260" aria-label="Circle diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+          </marker>
+        </defs>
+        <circle cx="130" cy="130" r="105" fill="none" stroke="#000" stroke-width="3"/>
+        <line x1="130" y1="130" x2="235" y2="130" stroke="#000" stroke-width="3" marker-end="url(#arrow)"/>
+        <text id="rLabel" x="138" y="112" font-size="18"
+              font-family="Times New Roman" font-style="italic">r</text>
+        <text x="215" y="215" font-size="20"
+              font-family="Times New Roman" font-style="italic">l</text>
+      </svg>
+    </div>
+    <div class="formulas">
+      <div class="f"><i>l</i> = 2π<i>r</i></div>
+      <div class="f"><i>A</i> = π<i>r</i>²</div>
+    </div>
+    <div class="block" style="margin-top:6px">
+      <div class="shape-title">Circle / Disc</div>
+      <div class="shape-sub">Regular 2D shape</div>
+      <div class="shape-def"><i>l</i> is the circumference<br><i>A</i> is the area</div>
+    </div>
+  </div>
+
+  <!-- RESULTS side by side -->
+  <div class="results">
+    <div class="calc">
+      <h2>Circumference</h2>
+      <div class="line" id="lF"></div>
+      <div class="line" id="lS"></div>
+      <div class="line" id="lE"></div>
+      <div class="line" id="lN"></div>
+    </div>
+    <div class="calc">
+      <h2>Area</h2>
+      <div class="line" id="aF"></div>
+      <div class="line" id="aS"></div>
+      <div class="line" id="aE"></div>
+      <div class="line" id="aN"></div>
+    </div>
+  </div>
+</div>
+
+</section>
+</div>
+
+<script>
+let r = 7;
+let dp = 2;
+let unit = null;
+let isDragging = false;
+
+const unitsSmall = [
+  {symbol:'', name:'units', mult:1, exp:'10⁰'},
+  {symbol:'cm', name:'centimetre', mult:1e-2, exp:'10⁻²'},
+  {symbol:'mm', name:'millimetre', mult:1e-3, exp:'10⁻³'},
+  {symbol:'μm', name:'micrometre', mult:1e-6, exp:'10⁻⁶'},
+  {symbol:'nm', name:'nanometre', mult:1e-9, exp:'10⁻⁹'}
+];
+
+const unitsLarge = [
+  {symbol:'m', name:'metre', mult:1, exp:'10⁰'},
+  {symbol:'km', name:'kilometre', mult:1e3, exp:'10³'},
+  {symbol:'Mm', name:'megametre', mult:1e6, exp:'10⁶'},
+  {symbol:'Gm', name:'gigametre', mult:1e9, exp:'10⁹'},
+  {symbol:'Tm', name:'terametre', mult:1e12, exp:'10¹²'}
+];
+
+const slider = document.getElementById("radiusSlider");
+
+// Sticky integer behavior
+slider.addEventListener("input", () => {
+  isDragging = true;
+  r = Number(slider.value);
+  update();
+});
+
+slider.addEventListener("change", () => {
+  isDragging = false;
+  // Snap to nearest integer if close
+  const nearest = Math.round(r);
+  if (Math.abs(r - nearest) < 0.15) {
+    r = nearest;
+    slider.value = r;
+  }
+  update();
+});
+
+// dp buttons 1–4
+const dpWrap = document.getElementById("dpBtns");
+[1,2,3,4].forEach(v => {
+  const b = document.createElement("button");
+  b.textContent = v;
+  if (v === 2) b.classList.add("active");
+  b.onclick = () => {
+    document.querySelectorAll("#dpBtns button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    dp = v;
+    update();
+  };
+  dpWrap.appendChild(b);
+});
+
+// unit buttons - small
+const unitWrapSmall = document.getElementById("unitBtnsSmall");
+unitsSmall.forEach((u, idx) => {
+  const b = document.createElement("button");
+  b.innerHTML = `${u.symbol || 'units'}<span class="unit-label">${u.exp}</span>`;
+  b.title = u.name;
+  if (idx === 0) b.classList.add("active");
+  b.onclick = () => {
+    document.querySelectorAll("#unitBtnsSmall button, #unitBtnsLarge button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    unit = u;
+    update();
+  };
+  unitWrapSmall.appendChild(b);
+});
+
+// unit buttons - large
+const unitWrapLarge = document.getElementById("unitBtnsLarge");
+unitsLarge.forEach(u => {
+  const b = document.createElement("button");
+  b.innerHTML = `${u.symbol}<span class="unit-label">${u.exp}</span>`;
+  b.title = u.name;
+  b.onclick = () => {
+    document.querySelectorAll("#unitBtnsSmall button, #unitBtnsLarge button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    unit = u;
+    update();
+  };
+  unitWrapLarge.appendChild(b);
+});
+
+function fmt(n, places) {
+  const nearInt = Math.abs(n - Math.round(n)) < 1e-12;
+  if (nearInt) return String(Math.round(n));
+  return Number(n).toFixed(places);
+}
+
+function update() {
+  const discrete = Number.isInteger(r) || Math.abs(r - Math.round(r)) < 1e-12;
+  const unitStr = unit && unit.symbol ? ` ${unit.symbol}` : '';
+  const unitStr2 = unit && unit.symbol ? ` ${unit.symbol}²` : '';
+
+  const rDisp = discrete ? String(Math.round(r)) : r.toFixed(2);
+  
+  document.getElementById("radiusDisplay").innerHTML = `<i>r</i> = ${rDisp}${unitStr}`;
+  document.getElementById("rLabel").textContent = "r = " + rDisp + unitStr;
+
+  const l = 2 * Math.PI * r;
+  const a = Math.PI * r * r;
+
+  const twoR = 2 * r;
+  const r2 = r * r;
+
+  const twoRDisp = fmt(twoR, discrete ? 0 : 2);
+  const r2Disp = fmt(r2, discrete ? 0 : 4);
+
+  document.getElementById("lF").innerHTML = `<i>l</i> = 2π<i>r</i>`;
+  document.getElementById("lS").innerHTML = `= 2π × ${rDisp}${unitStr}`;
+  document.getElementById("lE").innerHTML = `= ${twoRDisp}π${unitStr}`;
+  document.getElementById("lN").innerHTML = `≈ ${fmt(l, dp)}${unitStr}<span class="mut">${dp} dp</span>`;
+
+  document.getElementById("aF").innerHTML = `<i>A</i> = π<i>r</i>²`;
+  document.getElementById("aS").innerHTML = `= π × ${rDisp}²${unitStr2}`;
+  document.getElementById("aE").innerHTML = `= ${r2Disp}π${unitStr2}`;
+  document.getElementById("aN").innerHTML = `≈ ${fmt(a, dp)}${unitStr2}<span class="mut">${dp} dp</span>`;
+}
+
+unit = unitsSmall[0];
+update();
+</script>
+</body>
+</html>

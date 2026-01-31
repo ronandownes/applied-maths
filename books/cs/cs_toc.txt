@@ -1,0 +1,60 @@
+# Computer Science for Leaving Certificate
+# Golden Key Educational Publishing
+# PDF page numbering starts at page 1 on file page 1
+# Use actual PDF page numbers (no logical offsets)
+
+# Front Matter
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=2
+CHAPTER|ACK|Acknowledgements & Credits|ACK.0|start=3|end=3
+CHAPTER|TOC|Table of Contents|TOC.0|start=4|end=4
+CHAPTER|FOREWORD|Foreword|FOREWORD.0|start=5|end=5
+CHAPTER|AUTHORS|About the Authors|AUTHORS.0|start=6|end=6
+CHAPTER|CONTRIB|About the Contributors|CONTRIB.0|start=7|end=8
+CHAPTER|GUIDE|How to Use This Book|GUIDE.0|start=9|end=12
+
+# Main Content
+CHAPTER|01|Getting Started with Python|CH01.0|start=13|end=20
+SECTION||Introduction|start=13|end=13
+SECTION||Python essentials|start=13|end=13
+SECTION||IDEs|start=13|end=13
+SECTION||Getting started with coding|start=13|end=13
+SECTION||Printing|start=14|end=15
+SECTION||Errors|start=14|end=14
+SECTION||Experimenting further with printing|start=14|end=15
+SECTION||Comments|start=16|end=16
+SECTION||Variables|start=17|end=20
+SECTION||Assigning values to a variable|start=17|end=18
+SECTION||Creating variables|start=17|end=17
+SECTION||Integer and float|start=18|end=19
+SECTION||Performing calculations on variables|start=19|end=20
+SECTION||Order of operations|start=20|end=20
+
+CHAPTER|02|micro:bit|CH02.0|start=47|end=71
+
+CHAPTER|03|Analytics|CH03.0|start=72|end=94
+
+CHAPTER|04|HTML and CSS|CH04.0|start=95|end=117
+
+CHAPTER|05|A Brief History of Computing|CH05.0|start=118|end=128
+
+CHAPTER|06|Computer Systems|CH06.0|start=129|end=143
+
+CHAPTER|07|Computational Thinking, Algorithms and Data Representation|CH07.0|start=144|end=168
+
+CHAPTER|08|Software Development|CH08.0|start=169|end=186
+
+CHAPTER|09|More About Python|CH09.0|start=187|end=219
+
+CHAPTER|10|JavaScript|CH10.0|start=220|end=244
+
+CHAPTER|11|Databases|CH11.0|start=245|end=262
+
+CHAPTER|12|Modelling|CH12.0|start=263|end=276
+
+CHAPTER|13|Transforming Society: Improving Lives, AI and Machine Learning|CH13.0|start=277|end=299
+
+CHAPTER|14|Ethics and Computing|CH14.0|start=300|end=311
+
+# Back Matter
+CHAPTER|AFTERWORD|Afterword|AFTERWORD.0|start=312|end=313
+CHAPTER|APPENDIX|Picture Credits|APPENDIX.0|start=314|end=314

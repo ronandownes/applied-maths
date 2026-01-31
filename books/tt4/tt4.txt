@@ -1,0 +1,144 @@
+# Text & Tests 4
+# Leaving Certificate Higher Level
+# Table of Contents
+# Uses PDF file page numbers only
+
+# Front Matter
+CHAPTER|COVER|Cover & Title Pages|COVER.0|start=1|end=4
+CHAPTER|TOC|Table of Contents|TOC.0|start=5|end=7
+CHAPTER|PREFACE|Preface|PREFACE.0|start=8|end=8
+
+# Main Content
+
+CHAPTER|01|Algebra 1|CH01.0|start=9|end=45
+SECTION|1.1|Polynomial Expressions|start=9|end=15
+SECTION|1.2|Polynomial Functions: An Introduction|start=16|end=22
+SECTION|1.3|Factorising Algebraic Expressions|start=23|end=30
+SECTION|1.4|Simplifying Algebraic Expressions|start=31|end=35
+SECTION|1.5|Binomial Expansions|start=36|end=38
+SECTION|1.6|Algebraic Identities|start=39|end=41
+SECTION|1.7|Manipulating Formulae|start=42|end=44
+SECTION||Revision Exercises|start=45|end=45
+
+CHAPTER|02|Algebra 2|CH02.0|start=46|end=89
+SECTION|2.1|Quadratic Equations|start=46|end=53
+SECTION|2.2|Nature of Quadratic Roots|start=54|end=58
+SECTION|2.3|Solving Quadratic and Linear Equations|start=59|end=62
+SECTION|2.4|Quadratic and Linear Equations in Context|start=63|end=65
+SECTION|2.5|Forming Quadratic Equations from their Roots|start=66|end=69
+SECTION|2.6|Maximum and Minimum of Quadratic Graphs|start=70|end=73
+SECTION|2.7|The Factor Theorem|start=74|end=76
+SECTION|2.8|Algebraic Surd Equations|start=77|end=80
+SECTION|2.9|Graphs of Cubic and Higher Order Polynomials|start=81|end=88
+SECTION||Revision Exercises|start=89|end=89
+
+CHAPTER|03|Trigonometry 1|CH03.0|start=90|end=145
+SECTION|3.1|Radian Measure|start=90|end=98
+SECTION|3.2|Trigonometric Ratios|start=99|end=102
+SECTION|3.3|Trigonometric Functions|start=103|end=107
+SECTION|3.4|The Sine Rule – Area of a Triangle|start=108|end=112
+SECTION|3.5|The Cosine Rule|start=113|end=117
+SECTION|3.6|Problems in Three Dimensions|start=118|end=127
+SECTION|3.7|Graphs of Trigonometric Functions|start=128|end=134
+SECTION|3.8|Related Trigonometric Graphs|start=135|end=138
+SECTION|3.9|General Solutions of Trigonometric Equations|start=139|end=144
+SECTION||Revision Exercises|start=145|end=145
+
+CHAPTER|04|Coordinate Geometry: The Line|CH04.0|start=146|end=174
+SECTION|4.1|Revision of Formulae|start=146|end=149
+SECTION|4.2|The Area of a Triangle|start=150|end=151
+SECTION|4.3|The Equation of a Line|start=152|end=156
+SECTION|4.4|Dividing a Line Segment in a Given Ratio|start=157|end=158
+SECTION|4.5|Concurrency of a Triangle|start=159|end=160
+SECTION|4.6|The Perpendicular Distance from a Point to a Line|start=161|end=164
+SECTION|4.7|Using the Relative Position of Lines|start=165|end=166
+SECTION|4.8|Using Linear Relationships to Solve Problems|start=167|end=173
+SECTION||Revision Exercises|start=174|end=174
+
+CHAPTER|05|Probability 1|CH05.0|start=175|end=216
+SECTION|5.1|Permutations|start=175|end=181
+SECTION|5.2|Combinations|start=182|end=187
+SECTION|5.3|Elementary Probability|start=188|end=192
+SECTION|5.4|Experimental Probability – Relative Frequency|start=193|end=197
+SECTION|5.5|Mutually Exclusive Events – The Addition Rule|start=198|end=201
+SECTION|5.6|The Multiplication Law for Independent Events|start=202|end=209
+SECTION|5.7|Conditional Probability|start=210|end=215
+SECTION||Revision Exercises|start=216|end=216
+
+CHAPTER|06|Geometry 1|CH06.0|start=217|end=245
+SECTION|6.1|Angles, Triangles and Parallelograms|start=217|end=222
+SECTION|6.2|Theorems Involving Triangles and Parallelograms|start=223|end=228
+SECTION|6.3|Ratio Theorems|start=229|end=234
+SECTION|6.4|Circle Theorems|start=235|end=241
+SECTION||Revision Exercises|start=242|end=245
+
+CHAPTER|07|Differential Calculus|CH07.0|start=246|end=299
+SECTION|7.1|Average Rate of Change|start=246|end=259
+SECTION|7.2|Limits – Continuity|start=260|end=263
+SECTION|7.3|Differentiating from First Principles|start=264|end=269
+SECTION|7.4|Differentiation Rules|start=270|end=276
+SECTION|7.5|Product, Quotient and Chain Rules|start=277|end=281
+SECTION|7.6|Second Derivatives|start=282|end=284
+SECTION|7.7|Differentiation of Trigonometric Functions|start=285|end=287
+SECTION|7.8|Differentiation of Inverse Trigonometric Functions|start=288|end=292
+SECTION|7.9|Differentiation of Exponential Functions|start=293|end=295
+SECTION|7.10|Differentiating Logarithmic Functions|start=296|end=298
+SECTION||Revision Exercises|start=299|end=299
+
+CHAPTER|08|Trigonometry 2|CH08.0|start=300|end=321
+SECTION|8.1|Trigonometric Identities|start=300|end=306
+SECTION|8.2|Compound Angles|start=307|end=311
+SECTION|8.3|Double-Angle Formulae|start=312|end=316
+SECTION|8.4|Sum, Difference and Product Formulae|start=317|end=318
+SECTION|8.5|Inverse Trigonometric Functions|start=319|end=320
+SECTION||Revision Exercises|start=321|end=321
+
+CHAPTER|09|Sequences, Series, Patterns|CH09.0|start=322|end=359
+SECTION|9.1|Sequences|start=322|end=324
+SECTION|9.2|Arithmetic Sequences|start=325|end=328
+SECTION|9.3|Arithmetic Series|start=329|end=333
+SECTION|9.4|Geometric Sequences|start=334|end=345
+SECTION|9.5|Limits of Sequences|start=346|end=347
+SECTION|9.6|Geometric Series|start=348|end=352
+SECTION|9.7|Other Sequences|start=353|end=354
+SECTION|9.8|Number Patterns – Revisited|start=355|end=358
+SECTION||Revision Exercises|start=359|end=359
+
+CHAPTER|10|Statistics 1|CH10.0|start=360|end=412
+SECTION|10.1|Types of Data|start=360|end=364
+SECTION|10.2|Collecting Data|start=365|end=368
+SECTION|10.3|Populations and Sampling|start=369|end=373
+SECTION|10.4|Measures of Location|start=374|end=378
+SECTION|10.5|Measures of Variability|start=379|end=385
+SECTION|10.6|Stem and Leaf Diagrams (Stemplots)|start=386|end=395
+SECTION|10.7|Histograms|start=396|end=402
+SECTION|10.8|The Shape of a Distribution|start=403|end=405
+SECTION||Revision Exercises|start=406|end=412
+
+CHAPTER|11|Coordinate Geometry: The Circle|CH11.0|start=413|end=452
+SECTION|11.1|The Equation of a Circle with Centre (0,0)|start=413|end=421
+SECTION|11.2|Equations of a Circle with Centres not at (0,0)|start=422|end=426
+SECTION|11.3|Finding the Equation of a Circle|start=427|end=432
+SECTION|11.4|Tangents to a Circle|start=433|end=441
+SECTION|11.5|Lines and Circles: Common Chord|start=442|end=444
+SECTION|11.6|Touching Circles: Chords and Circles|start=445|end=448
+SECTION|11.7|Circles Touching the x-axis or y-axis|start=449|end=451
+SECTION||Revision Exercises|start=452|end=452
+
+CHAPTER|12|Algebra 3|CH12.0|start=453|end=512
+SECTION|12.1|Revision|start=453|end=459
+SECTION|12.2|Quadratic and Rational Inequalities|start=460|end=464
+SECTION|12.3|Modulus|start=465|end=468
+SECTION|12.4|Mathematical Proof|start=469|end=470
+SECTION|12.5|Proofs of Abstract Inequalities|start=471|end=473
+SECTION|12.6|Indices|start=474|end=476
+SECTION|12.7|Exponential Equations|start=477|end=479
+SECTION|12.8|Exponential Functions|start=480|end=484
+SECTION|12.9|Logarithmic Function|start=485|end=491
+SECTION|12.10|The Graph of y = log_a(x)|start=492|end=492
+SECTION|12.11|Problem Solving with Exponential and Log Functions|start=493|end=497
+SECTION|12.12|Proofs by Induction|start=498|end=505
+SECTION||Revision Exercises|start=506|end=512
+
+# Back Matter
+CHAPTER|ANSWERS|Answers|ANSWERS.0|start=513|end=??? 

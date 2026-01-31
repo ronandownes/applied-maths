@@ -1,0 +1,86 @@
+[
+  {
+    "name": "am1",
+    "folder": "am1",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/am1/thumbs/001.webp"
+  },
+  {
+    "name": "am2",
+    "folder": "am2",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/am2/thumbs/001.webp"
+  },
+  {
+    "name": "am3",
+    "folder": "am3",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/am3/thumbs/001.webp"
+  },
+  {
+    "name": "am4",
+    "folder": "am4",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/am4/thumbs/001.webp"
+  },
+  {
+    "name": "am42",
+    "folder": "am42",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/am42/thumbs/001.webp"
+  },
+  {
+    "name": "fam",
+    "folder": "fam",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/fam/thumbs/001.webp"
+  },
+  {
+    "name": "ft",
+    "folder": "ft",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/ft/thumbs/001.webp"
+  },
+  {
+    "name": "rwp",
+    "folder": "rwp",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/rwp/thumbs/001.webp"
+  },
+  {
+    "name": "tt2h",
+    "folder": "tt2h",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/tt2h/thumbs/001.webp"
+  },
+  {
+    "name": "tt3",
+    "folder": "tt3",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/tt3/thumbs/001.webp"
+  },
+  {
+    "name": "tt4",
+    "folder": "tt4",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/tt4/thumbs/001.webp"
+  },
+  {
+    "name": "tt5",
+    "folder": "tt5",
+    "pages": 0,
+    "has_viewer": true,
+    "thumbnail": "books/tt5/thumbs/001.webp"
+  }
+]

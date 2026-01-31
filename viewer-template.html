@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>__BOOK_NAME__ - Viewer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { touch-action: pan-x pan-y; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+        :fullscreen { width: 100% !important; height: 100% !important; }
+        
+        .toc-toggle-fixed {
+            position: fixed;
+            top: 50px;
+            left: 0;
+            z-index: 2000;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 8px 6px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+        .toc-toggle-fixed:hover { background: #0080ff; padding-left: 10px; }
+        
+        .toc-sidebar {
+            width: 300px;
+            background: #222;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, width 0.3s;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+        .toc-collapsed .toc-sidebar { transform: translateX(-300px); width: 0; }
+        
+        .toc-header {
+            padding: 8px 10px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toc-header h2 { font-size: 13px; color: #fff; }
+        .toc-close {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+        .toc-close:hover { background: #333; }
+        
+        .toc-content { flex: 1; overflow-y: auto; padding: 4px; }
+        
+        .toc-chapter { margin-bottom: 2px; border-radius: 2px; overflow: hidden; }
+        .toc-chapter-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 6px;
+            background: #2a2a2a;
+            cursor: pointer;
+            user-select: none;
+        }
+        .toc-chapter-header:hover { background: #333; }
+        .chapter-expand { color: #66b3ff; font-size: 9px; width: 12px; transition: transform 0.2s; }
+        .chapter-expand.expanded { transform: rotate(90deg); }
+        .chapter-number { color: #66b3ff; font-weight: bold; font-size: 10px; min-width: 24px; }
+        .toc-chapter-title { font-weight: 500; font-size: 10px; flex: 1; line-height: 1.3; }
+        
+        .toc-sections { max-height: 0; overflow: hidden; transition: max-height 0.3s; background: #222; }
+        .toc-chapter.expanded .toc-sections { max-height: 1000px; }
+        
+        .toc-section {
+            padding: 4px 6px 4px 32px;
+            font-size: 9px;
+            cursor: pointer;
+            display: flex;
+            gap: 4px;
+            line-height: 1.3;
+        }
+        .toc-section:hover { background: #2a2a2a; }
+        .toc-section.active { background: #333; color: #fff; }
+        .section-number { color: #666; font-size: 8px; min-width: 24px; }
+        
+        .viewer { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Controls - centered */
+        .controls {
+            background: #222;
+            padding: 4px 8px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            touch-action: manipulation;
+        }
+        
+        .controls-center {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        button {
+            background: #333;
+            border: 1px solid #444;
+            color: #ccc;
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            min-width: 32px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover { background: #444; }
+        button.active { background: #0066cc; border-color: #0080ff; color: #fff; }
+        button.copied { background: #2e7d32 !important; }
+        
+        /* Page info - clickable */
+        .page-info {
+            display: flex;
+            align-items: baseline;
+            font-size: 12px;
+            gap: 2px;
+            margin: 0 6px;
+        }
+        #current-page {
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 3px;
+            min-width: 18px;
+            text-align: center;
+        }
+        #current-page:hover { background: #444; }
+        .page-slash { color: #555; font-size: 10px; }
+        #total-pages { color: #666; font-size: 10px; }
+        
+        .page-input-inline {
+            width: 36px;
+            padding: 3px;
+            font-size: 12px;
+            text-align: center;
+            background: #1a1a1a;
+            border: 1px solid #0066cc;
+            border-radius: 3px;
+            color: #e0e0e0;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        .page-input-inline::-webkit-outer-spin-button,
+        .page-input-inline::-webkit-inner-spin-button { -webkit-appearance: none; }
+        
+        .sep { width: 1px; height: 18px; background: #444; margin: 0 4px; }
+        
+        .copy-link-btn { position: relative; }
+        .copy-link-tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2e7d32;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .copy-link-tooltip.show { opacity: 1; }
+        
+        .image-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow: auto;
+            background: #1a1a1a;
+            position: relative;
+            touch-action: none;
+        }
+        .image-container.fit-height { align-items: center; }
+        .image-container.fit-height img { height: 100% !important; width: auto !important; max-width: 100%; object-fit: contain; }
+        .image-container.fit-width img { width: 100% !important; height: auto !important; object-fit: contain; }
+        
+        #page-image { display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.5); transition: transform 0.1s; }
+        
+        /* Navigation buttons on sides - UPDATED */
+        .side-nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 100px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: opacity 0.2s, background 0.2s;
+            border-radius: 0;
+        }
+        .side-nav-btn:hover {
+            opacity: 1;
+            background: rgba(0, 102, 204, 0.7);
+        }
+        .side-nav-btn.prev {
+            left: 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .side-nav-btn.next {
+            right: 0;
+            border-radius: 8px 0 0 8px;
+        }
+        
+        /* Touch navigation zones */
+        .nav-zone {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 25%;
+            cursor: pointer;
+            z-index: 50;
+            pointer-events: auto;
+        }
+        .nav-zone-left { left: 0; }
+        .nav-zone-right { right: 0; }
+        .nav-zone:hover { background: rgba(255,255,255,0.03); }
+        
+        /* Allow scroll through zones when zoomed */
+        .image-container.fit-height .nav-zone,
+        .image-container.fit-width .nav-zone { pointer-events: auto; }
+        
+        .image-container.panning { cursor: grab; }
+        .image-container.panning:active { cursor: grabbing; }
+        
+        .zoom-indicator {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            display: none;
+            z-index: 100;
+        }
+        
+        .image-container::-webkit-scrollbar { width: 5px; height: 5px; }
+        .image-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .image-container { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
+        
+        .no-toc { text-align: center; padding: 20px; color: #666; font-style: italic; font-size: 11px; }
+        
+        @media (max-width: 500px) {
+            .toc-sidebar { width: 260px; }
+            .toc-collapsed .toc-sidebar { transform: translateX(-260px); }
+            .controls { padding: 3px 6px; }
+            .controls-center { gap: 4px; }
+            button { padding: 4px 6px; min-width: 28px; height: 26px; font-size: 12px; }
+            .page-info { font-size: 11px; margin: 0 4px; }
+            #current-page { padding: 2px 4px; }
+            .side-nav-btn {
+                width: 40px;
+                height: 80px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="toc-collapsed">
+    <button class="toc-toggle-fixed" id="toc-toggle-fixed" title="Contents (T)">📖</button>
+
+    <div class="toc-sidebar">
+        <div class="toc-header">
+            <h2>Contents</h2>
+            <button class="toc-close" id="toc-close">×</button>
+        </div>
+        <div class="toc-content" id="toc-content"></div>
+    </div>
+
+    <!-- Side Navigation Buttons -->
+    <button class="side-nav-btn prev" id="side-prev" title="Previous Page">◀</button>
+    <button class="side-nav-btn next" id="side-next" title="Next Page">▶</button>
+
+    <div class="viewer">
+        <div class="controls">
+            <div class="controls-center">
+                <button id="nav-prev" title="Previous (←)">◀</button>
+                <button id="nav-next" title="Next (→)">▶</button>
+                
+                <span class="sep"></span>
+                
+                <button id="zoom-out" title="Zoom Out">−</button>
+                <button id="zoom-in" title="Zoom In">+</button>
+                
+                <span class="sep"></span>
+                
+                <button id="fit-height" title="Fit Height (H)" class="active">↕</button>
+                <button id="fit-width" title="Fit Width (W)">↔</button>
+                
+                <span class="page-info">
+                    <span id="current-page" title="Go to page">1</span>
+                    <span class="page-slash">/</span>
+                    <span id="total-pages">0</span>
+                </span>
+                
+                <span class="sep"></span>
+                
+                <button id="copy-link" class="copy-link-btn" title="Copy Link">📎<span class="copy-link-tooltip">Copied!</span></button>
+                <button id="fullscreen" title="Fullscreen (F)">⛶</button>
+            </div>
+        </div>
+
+        <div class="image-container" id="image-container">
+            <div class="nav-zone nav-zone-left" id="nav-zone-left"></div>
+            <img id="page-image" src="" alt="Page">
+            <div class="nav-zone nav-zone-right" id="nav-zone-right"></div>
+            <div class="zoom-indicator" id="zoom-indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        const config = {
+            pages: __PAGES__,
+            imgBase: __IMG_BASE__,
+            toc: __TOC__,
+            pageOffset: __PAGE_OFFSET__,
+            currentPage: 0,
+            zoom: 1.0,
+            isPanning: false,
+            spaceHeld: false,
+            startX: 0, startY: 0,
+            panStartX: 0, panStartY: 0,
+            translateX: 0, translateY: 0,
+            baseImgWidth: 0, baseImgHeight: 0,
+            currentFitMode: localStorage.getItem('fitMode') || 'height',
+            expandedChapters: JSON.parse(localStorage.getItem('expandedChapters') || '{}')
+        };
+        
+        const $ = id => document.getElementById(id);
+        const pageImage = $('page-image');
+        const imageContainer = $('image-container');
+        const zoomIndicator = $('zoom-indicator');
+        
+        function init() {
+            const lastDisplayNum = config.pages.length - config.pageOffset;
+            $('total-pages').textContent = lastDisplayNum;
+            loadPage(config.currentPage);
+            renderTOC();
+            setupEvents();
+            const s = localStorage.getItem('currentPage');
+            if (s) { const n = parseInt(s); if (n >= 0 && n < config.pages.length) loadPage(n); }
+            setFitMode('height');
+            if (localStorage.getItem('tocVisible') === 'true') toggleTOC(true);
+            if (config.toc.chapters?.length) setTimeout(() => toggleTOC(true), 100);
+        }
+        
+        function toggleTOC(show) {
+            if (show === undefined) show = document.body.classList.contains('toc-collapsed');
+            document.body.classList.toggle('toc-collapsed', !show);
+            localStorage.setItem('tocVisible', show);
+        }
+        
+        function setFitMode(mode) {
+            config.currentFitMode = mode;
+            imageContainer.classList.remove('fit-height', 'fit-width');
+            imageContainer.classList.add('fit-' + mode);
+            $('fit-height').classList.toggle('active', mode === 'height');
+            $('fit-width').classList.toggle('active', mode === 'width');
+            config.zoom = 1; config.translateX = config.translateY = 0;
+            updateTransform();
+            localStorage.setItem('fitMode', mode);
+        }
+        
+        function loadPage(idx) {
+            if (idx < 0 || idx >= config.pages.length) return;
+            config.currentPage = idx;
+            pageImage.src = config.imgBase ? `${config.imgBase}/${config.pages[idx]}` : config.pages[idx];
+            const displayNum = (idx + 1) - config.pageOffset;
+            $('current-page').textContent = displayNum;
+            config.zoom = 1; config.translateX = config.translateY = 0;
+            updateTransform();
+            imageContainer.scrollTop = imageContainer.scrollLeft = 0;
+            updateActiveTOC();
+            localStorage.setItem('currentPage', idx);
+        }
+        
+        pageImage.onload = () => { config.baseImgWidth = pageImage.offsetWidth; config.baseImgHeight = pageImage.offsetHeight; };
+        
+        function renderTOC() {
+            const c = $('toc-content');
+            if (!config.toc.chapters?.length) { c.innerHTML = '<div class="no-toc">No contents</div>'; return; }
+            let h = '';
+            config.toc.chapters.forEach((ch, i) => {
+                const exp = config.expandedChapters[i] === true;
+                h += `<div class="toc-chapter ${exp?'expanded':''}" data-index="${i}">
+                    <div class="toc-chapter-header">
+                        <span class="chapter-expand ${exp?'expanded':''}">▶</span>
+                        <div class="chapter-number">${ch.code||''}</div>
+                        <div class="toc-chapter-title" data-start="${ch.start-1}">${ch.title}</div>
+                    </div><div class="toc-sections">`;
+                (ch.sections||[]).forEach(s => {
+                    h += `<div class="toc-section" data-start="${s.start-1}"><div class="section-number">${s.code||''}</div><div>${s.title}</div></div>`;
+                });
+                h += '</div></div>';
+            });
+            c.innerHTML = h;
+            c.querySelectorAll('.toc-chapter-header').forEach(el => {
+                el.onclick = e => {
+                    const ch = el.parentElement, idx = +ch.dataset.index;
+                    if (e.target.classList.contains('chapter-expand') || e.target.classList.contains('chapter-number')) {
+                        ch.classList.toggle('expanded');
+                        el.querySelector('.chapter-expand').classList.toggle('expanded');
+                        config.expandedChapters[idx] = ch.classList.contains('expanded');
+                        localStorage.setItem('expandedChapters', JSON.stringify(config.expandedChapters));
+                    } else {
+                        const st = +el.querySelector('.toc-chapter-title').dataset.start;
+                        if (!isNaN(st)) { loadPage(st); toggleTOC(false); }
+                    }
+                };
+            });
+            c.querySelectorAll('.toc-section').forEach(el => {
+                el.onclick = () => { const st = +el.dataset.start; if (!isNaN(st)) { loadPage(st); toggleTOC(false); } };
+            });
+        }
+        
+        function updateActiveTOC() {
+            document.querySelectorAll('.toc-section').forEach(el => el.classList.remove('active'));
+            let active = null, minD = Infinity;
+            document.querySelectorAll('.toc-section').forEach(el => {
+                const st = +el.dataset.start;
+                if (!isNaN(st) && config.currentPage >= st && config.currentPage - st < minD) { minD = config.currentPage - st; active = el; }
+            });
+            if (active) { active.classList.add('active'); setTimeout(() => active.scrollIntoView({ block: 'center', behavior: 'smooth' }), 100); }
+        }
+        
+        function updateTransform() {
+            pageImage.style.transform = `translate(${config.translateX}px,${config.translateY}px) scale(${config.zoom})`;
+            const pct = Math.round(config.zoom * 100) + '%';
+            zoomIndicator.textContent = pct;
+            if (config.zoom !== 1) {
+                zoomIndicator.style.display = 'block';
+            } else {
+                zoomIndicator.style.display = 'none';
+            }
+        }
+        
+        // Function to pan image when zoomed
+        function panImage(dx, dy) {
+            if (config.zoom > 1) {
+                config.translateX += dx;
+                config.translateY += dy;
+                updateTransform();
+                return true; // Image was panned
+            }
+            return false; // Image was not panned (not zoomed)
+        }
+        
+        function showPageInput() {
+            const inp = document.createElement('input');
+            inp.type = 'text'; inp.inputMode = 'numeric';
+            inp.className = 'page-input-inline';
+            inp.value = (config.currentPage + 1) - config.pageOffset;
+            inp.onkeydown = e => { if (e.key === 'Enter') submitPage(inp); else if (e.key === 'Escape') hidePage(inp); };
+            inp.onblur = () => submitPage(inp);
+            const span = $('current-page');
+            span.style.display = 'none';
+            span.parentNode.insertBefore(inp, span);
+            inp.focus(); inp.select();
+        }
+        function hidePage(inp) { $('current-page').style.display = ''; inp?.remove(); }
+        function submitPage(inp) {
+            const displayNum = parseInt(inp.value);
+            const idx = displayNum + config.pageOffset - 1;
+            if (idx >= 0 && idx < config.pages.length) loadPage(idx);
+            hidePage(inp);
+        }
+        
+        function copyLink() {
+            const displayNum = (config.currentPage + 1) - config.pageOffset;
+            const url = new URL(location.href); url.hash = `#page=${displayNum}`;
+            navigator.clipboard.writeText(url.toString()).then(() => {
+                $('copy-link').classList.add('copied');
+                document.querySelector('.copy-link-tooltip').classList.add('show');
+                setTimeout(() => { $('copy-link').classList.remove('copied'); document.querySelector('.copy-link-tooltip').classList.remove('show'); }, 1200);
+            });
+        }
+        
+        function toggleFS() {
+            const d = document, e = document.documentElement;
+            if (!d.fullscreenElement && !d.webkitFullscreenElement) (e.requestFullscreen || e.webkitRequestFullscreen).call(e);
+            else (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+        }
+        
+        function setupEvents() {
+            $('toc-toggle-fixed').onclick = () => toggleTOC();
+            $('toc-close').onclick = () => toggleTOC(false);
+            $('fit-height').onclick = () => setFitMode('height');
+            $('fit-width').onclick = () => setFitMode('width');
+            $('zoom-in').onclick = () => { config.zoom = Math.min(5, config.zoom + 0.15); updateTransform(); };
+            $('zoom-out').onclick = () => { config.zoom = Math.max(0.2, config.zoom - 0.15); updateTransform(); };
+            $('copy-link').onclick = copyLink;
+            $('fullscreen').onclick = toggleFS;
+            $('current-page').onclick = showPageInput;
+            $('nav-prev').onclick = () => loadPage(config.currentPage - 1);
+            $('nav-next').onclick = () => loadPage(config.currentPage + 1);
+            
+            // Side navigation buttons - when zoomed, pan image; when not zoomed, change page
+            $('side-prev').onclick = (e) => {
+                if (!panImage(50, 0)) { // Try to pan right
+                    loadPage(config.currentPage - 1); // If not zoomed, change page
+                }
+            };
+            $('side-next').onclick = (e) => {
+                if (!panImage(-50, 0)) { // Try to pan left
+                    loadPage(config.currentPage + 1); // If not zoomed, change page
+                }
+            };
+            
+            // Arrow keys for panning when zoomed
+            window.addEventListener('keydown', e => {
+                if (e.target.tagName === 'INPUT') return;
+                
+                // Arrow keys for panning when zoomed
+                if (config.zoom > 1) {
+                    let panned = false;
+                    if (e.key === 'ArrowLeft') { 
+                        panned = panImage(30, 0);
+                        if (panned) e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowRight') { 
+                        panned = panImage(-30, 0);
+                        if (panned) e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowUp') { 
+                        panned = panImage(0, 30);
+                        if (panned) e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowDown') { 
+                        panned = panImage(0, -30);
+                        if (panned) e.preventDefault();
+                    }
+                    
+                    // If we panned, don't do page navigation
+                    if (panned) return;
+                }
+                
+                if (e.code === 'Space' && !config.spaceHeld) {
+                    config.spaceHeld = true;
+                    imageContainer.classList.add('panning');
+                    e.preventDefault();
+                    return;
+                }
+                
+                // Arrow keys for page navigation when not zoomed
+                if (!(config.zoom > 1)) {
+                    if (e.key === 'ArrowLeft') { e.preventDefault(); loadPage(config.currentPage - 1); }
+                    else if (e.key === 'ArrowRight') { e.preventDefault(); loadPage(config.currentPage + 1); }
+                }
+                
+                if (e.key === 'h' || e.key === 'H') setFitMode('height');
+                else if (e.key === 'w' || e.key === 'W') setFitMode('width');
+                else if (e.key === 't' || e.key === 'T') toggleTOC();
+                else if (e.key === 'f' || e.key === 'F') toggleFS();
+            });
+            
+            window.addEventListener('keyup', e => {
+                if (e.code === 'Space') {
+                    config.spaceHeld = false;
+                    config.isPanning = false;
+                    imageContainer.classList.remove('panning');
+                }
+            });
+            
+            // Drag to pan (spacebar + drag)
+            imageContainer.addEventListener('mousedown', e => {
+                if (config.spaceHeld) {
+                    config.isPanning = true;
+                    config.startX = e.clientX;
+                    config.startY = e.clientY;
+                    config.panStartX = config.translateX;
+                    config.panStartY = config.translateY;
+                    e.preventDefault();
+                }
+            });
+            
+            window.addEventListener('mousemove', e => {
+                if (!config.isPanning) return;
+                const dx = e.clientX - config.startX;
+                const dy = e.clientY - config.startY;
+                config.translateX = config.panStartX + dx;
+                config.translateY = config.panStartY + dy;
+                updateTransform();
+            });
+            
+            window.addEventListener('mouseup', () => {
+                config.isPanning = false;
+            });
+            
+            document.addEventListener('wheel', e => {
+                if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    config.zoom = Math.max(0.2, Math.min(5, config.zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
+                    updateTransform();
+                }
+            }, { passive: false });
+            
+            document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+            ['gesturestart', 'gesturechange', 'gestureend'].forEach(ev => document.addEventListener(ev, e => e.preventDefault()));
+            
+            let ts = {}, pan = false;
+            pageImage.ontouchstart = e => {
+                if (e.touches.length === 1 && config.zoom > 1) {
+                    pan = true; ts = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: config.translateX, ty: config.translateY };
+                } else if (e.touches.length === 2) {
+                    pan = false; e.preventDefault();
+                    config.touchDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+                    config.touchZoom = config.zoom;
+                }
+            };
+            pageImage.ontouchmove = e => {
+                if (e.touches.length === 1 && pan && config.zoom > 1) {
+                    e.preventDefault();
+                    config.translateX = ts.tx + e.touches[0].clientX - ts.x;
+                    config.translateY = ts.ty + e.touches[0].clientY - ts.y;
+                    updateTransform();
+                } else if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const d = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+                    config.zoom = Math.max(0.2, Math.min(5, config.touchZoom * (d / config.touchDist)));
+                    updateTransform();
+                }
+            };
+            pageImage.ontouchend = () => pan = false;
+            pageImage.ondblclick = () => { config.zoom = 1; config.translateX = config.translateY = 0; updateTransform(); };
+        }
+        
+        window.onload = init;
+        window.onhashchange = () => {
+            const m = location.hash.match(/^#page=(-?\d+)$/);
+            if (m) {
+                const displayNum = parseInt(m[1]);
+                const idx = displayNum + config.pageOffset - 1;
+                if (idx >= 0 && idx < config.pages.length) loadPage(idx);
+            }
+        };
+        if (location.hash.startsWith('#page=')) {
+            const displayNum = parseInt(location.hash.slice(6));
+            if (!isNaN(displayNum)) {
+                const idx = displayNum + config.pageOffset - 1;
+                if (idx >= 0) config.currentPage = idx;
+            }
+        }
+    </script>
+
+<!-- WOODEN RULER -->
+<style>
+#woodenRuler {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9990;
+  cursor: ns-resize;
+  display: none;
+  user-select: none;
+}
+#woodenRuler .ruler-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #d4a574 0%, #c49a6c 20%, #b8916a 50%, #c49a6c 80%, #d4a574 100%);
+  border-top: 2px solid #8b6914;
+  border-bottom: 2px solid #8b6914;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+  position: relative;
+  overflow: hidden;
+}
+#woodenRuler .ruler-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0px, rgba(139,105,20,0.1) 1px, transparent 2px, transparent 40px);
+  pointer-events: none;
+}
+#woodenRuler .tick {
+  position: absolute;
+  width: 1px;
+  background: #3d2914;
+}
+#woodenRuler .tick-cm { top: 0; }
+#woodenRuler .tick-in { bottom: 0; }
+#woodenRuler .tick-cm.major { height: 18px; width: 2px; }
+#woodenRuler .tick-cm.half { height: 12px; }
+#woodenRuler .tick-cm.minor { height: 7px; }
+#woodenRuler .tick-in.major { height: 18px; width: 2px; }
+#woodenRuler .tick-in.half { height: 14px; }
+#woodenRuler .tick-in.quarter { height: 10px; }
+#woodenRuler .tick-in.eighth { height: 6px; }
+#woodenRuler .label {
+  position: absolute;
+  font: bold 9px Arial, sans-serif;
+  color: #3d2914;
+}
+#woodenRuler .label-cm { top: 20px; transform: translateX(-50%); }
+#woodenRuler .label-in { bottom: 20px; transform: translateX(-50%); }
+#rulerToggle {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 9999;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  background: #222;
+  color: #e0e0e0;
+  border-radius: 10px;
+  font: 600 13px system-ui;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+}
+#rulerToggle:hover { background: #333; }
+#rulerToggle.active { background: #8b6914; border-color: #d4a574; }
+</style>
+
+<button id="rulerToggle" title="Toggle Ruler">📏</button>
+<div id="woodenRuler">
+  <div class="ruler-body" id="rulerBody"></div>
+</div>
+
+<script>
+(function() {
+  const ruler = document.getElementById('woodenRuler');
+  const body = document.getElementById('rulerBody');
+  const toggle = document.getElementById('rulerToggle');
+  const container = document.getElementById('image-container');
+  const img = document.getElementById('page-image');
+  
+  let visible = false;
+  let dragging = false;
+  let dragStartY = 0;
+  let rulerStartTop = 0;
+  let pxPerMm = null;
+  
+  function calibrate() {
+    if (!img) return;
+    const rect = img.getBoundingClientRect();
+    if (rect.width > 0) {
+      pxPerMm = rect.width / 210; // A4 = 210mm wide
+    } else {
+      pxPerMm = window.innerWidth / 210; // fallback estimate
+    }
+    drawTicks();
+  }
+  
+  function drawTicks() {
+    if (!pxPerMm) return;
+    body.innerHTML = '';
+    
+    const width = window.innerWidth;
+    const pxPerCm = pxPerMm * 10;
+    const pxPerInch = pxPerMm * 25.4;
+    
+    // CM ticks (top)
+    for (let mm = 0; mm * pxPerMm < width; mm++) {
+      const x = mm * pxPerMm;
+      const tick = document.createElement('div');
+      tick.className = 'tick tick-cm';
+      if (mm % 10 === 0) {
+        tick.classList.add('major');
+        const lbl = document.createElement('div');
+        lbl.className = 'label label-cm';
+        lbl.textContent = mm / 10;
+        lbl.style.left = x + 'px';
+        body.appendChild(lbl);
+      } else if (mm % 5 === 0) {
+        tick.classList.add('half');
+      } else {
+        tick.classList.add('minor');
+      }
+      tick.style.left = x + 'px';
+      body.appendChild(tick);
+    }
+    
+    // Inch ticks (bottom)
+    for (let eighth = 0; eighth * (pxPerInch / 8) < width; eighth++) {
+      const x = eighth * (pxPerInch / 8);
+      const tick = document.createElement('div');
+      tick.className = 'tick tick-in';
+      if (eighth % 8 === 0) {
+        tick.classList.add('major');
+        const lbl = document.createElement('div');
+        lbl.className = 'label label-in';
+        lbl.textContent = eighth / 8;
+        lbl.style.left = x + 'px';
+        body.appendChild(lbl);
+      } else if (eighth % 4 === 0) {
+        tick.classList.add('half');
+      } else if (eighth % 2 === 0) {
+        tick.classList.add('quarter');
+      } else {
+        tick.classList.add('eighth');
+      }
+      tick.style.left = x + 'px';
+      body.appendChild(tick);
+    }
+  }
+  
+  function show() {
+    visible = true;
+    ruler.style.display = 'block';
+    toggle.classList.add('active');
+    calibrate();
+  }
+  
+  function hide() {
+    visible = false;
+    ruler.style.display = 'none';
+    toggle.classList.remove('active');
+  }
+  
+  toggle.addEventListener('click', () => visible ? hide() : show());
+  
+  // Drag to move vertically
+  ruler.addEventListener('mousedown', e => {
+    dragging = true;
+    dragStartY = e.clientY;
+    rulerStartTop = ruler.getBoundingClientRect().top;
+    e.preventDefault();
+  });
+  
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dy = e.clientY - dragStartY;
+    const newTop = Math.max(0, Math.min(window.innerHeight - 60, rulerStartTop + dy));
+    ruler.style.top = newTop + 'px';
+    ruler.style.transform = 'none';
+  });
+  
+  window.addEventListener('mouseup', () => { dragging = false; });
+  
+  // Touch support
+  ruler.addEventListener('touchstart', e => {
+    dragging = true;
+    dragStartY = e.touches[0].clientY;
+    rulerStartTop = ruler.getBoundingClientRect().top;
+  }, { passive: true });
+  
+  window.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const dy = e.touches[0].clientY - dragStartY;
+    const newTop = Math.max(0, Math.min(window.innerHeight - 60, rulerStartTop + dy));
+    ruler.style.top = newTop + 'px';
+    ruler.style.transform = 'none';
+  }, { passive: true });
+  
+  window.addEventListener('touchend', () => { dragging = false; });
+  
+  // Recalibrate on resize or fit mode change
+  window.addEventListener('resize', () => { if (visible) calibrate(); });
+  if (img) img.addEventListener('load', () => { if (visible) calibrate(); });
+  
+  const fitW = document.getElementById('fit-width');
+  const fitH = document.getElementById('fit-height');
+  if (fitW) fitW.addEventListener('click', () => setTimeout(calibrate, 50));
+  if (fitH) fitH.addEventListener('click', () => setTimeout(calibrate, 50));
+})();
+</script>
+
+</body>
+</html>

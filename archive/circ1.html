@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Circle / Disc</title>
+
+<style>
+:root{--ink:#000;--line:#cfcfcf;--muted:#666;--blue:#2563eb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#fff;color:var(--ink)}
+.wrap{max-width:900px;margin:6px auto;padding:0 6px}
+.card{border:1px solid var(--line);border-radius:10px;padding:8px}
+
+/* TOP CONTROLS ROW */
+.controls-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:start;margin-bottom:8px}
+.block{border:1px solid var(--line);border-radius:8px;padding:6px}
+.block h3{margin:0 0 3px;font-size:12px}
+label{font-size:11px;color:var(--muted)}
+
+/* SHAPE TITLE */
+.shape-block{min-width:100px}
+.shape-title{font-family:"Times New Roman",Times,serif;font-size:20px;font-weight:700}
+.shape-sub{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* RADIUS - NUMBER LINE ONLY */
+.radius-block{min-width:320px}
+.radius-display{font-family:"Times New Roman",Times,serif;font-size:14px;margin-bottom:4px}
+
+/* BLUE NUMBER LINE */
+.numline-wrap{margin-top:4px}
+.numline{position:relative;height:24px;margin:0 12px}
+.numline::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;background:var(--blue)}
+.numline-tick{position:absolute;top:50%;transform:translate(-50%,-50%);width:3px;height:14px;background:var(--blue)}
+.numline-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;background:var(--blue);border-radius:50%;cursor:grab}
+.numline-dot:active{cursor:grabbing}
+.numline-labels{display:flex;justify-content:space-between;font-size:10px;margin:2px 12px 0;color:var(--blue)}
+
+/* DP + UNITS STACKED */
+.settings-block{min-width:100px}
+.dprow{display:flex;gap:3px;margin-top:4px}
+.dprow button{flex:1;border:1px solid var(--line);border-radius:5px;background:#fff;
+  font-size:11px;padding:3px 5px;cursor:pointer}
+.dprow button.active{background:#000;color:#fff}
+
+.btnrow{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-top:4px}
+.btnrow button{border:1px solid var(--line);border-radius:4px;background:#fff;
+  font-size:10px;padding:3px 2px;cursor:pointer;line-height:1.2}
+.btnrow button.active{background:#000;color:#fff}
+
+/* MAIN CONTENT */
+.main{display:grid;grid-template-columns:220px 1fr 1fr;gap:10px;align-items:start}
+
+/* DIAGRAM */
+.diagram svg{width:100%;height:auto;display:block}
+.formulas{font-family:"Times New Roman",Times,serif;margin-top:4px}
+.formulas .f{font-size:16px;margin:2px 0}
+
+/* RESULTS */
+.calc{border:1px solid var(--line);border-radius:8px;padding:8px}
+.calc h2{margin:0 0 6px;font-size:14px}
+.line{font-family:"Times New Roman",Times,serif;font-size:18px;margin:3px 0}
+
+/* BOXED ANSWERS */
+.answer-box{border:2px solid #000;padding:4px 8px;margin:6px 0;display:inline-block;font-size:20px}
+.answer-label{font-size:11px;color:var(--muted);font-family:Segoe UI,Arial,sans-serif;margin-left:8px}
+
+/* TRUNCATED + ROUNDING */
+.trunc-line{font-family:"Times New Roman",Times,serif;font-size:16px;margin:4px 0;color:var(--muted)}
+.round-arrow{font-size:14px;margin-left:4px}
+.round-up{color:#16a34a}
+.round-down{color:#dc2626}
+
+@media(max-width:800px){
+  .controls-row{grid-template-columns:1fr;gap:6px}
+  .main{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<section class="card">
+
+<!-- TOP CONTROLS ROW -->
+<div class="controls-row">
+  <div class="block shape-block">
+    <div class="shape-title">Circle / Disc</div>
+    <div class="shape-sub">2D shape</div>
+  </div>
+
+  <div class="block radius-block">
+    <h3>Radius</h3>
+    <div class="radius-display" id="radiusDisplay"><i>r</i> = 7</div>
+    <div class="numline-wrap">
+      <div class="numline" id="numline"></div>
+      <div class="numline-labels" id="numlineLabels"></div>
+    </div>
+  </div>
+
+  <div class="block settings-block">
+    <h3>Decimal places</h3>
+    <div class="dprow" id="dpBtns"></div>
+    <h3 style="margin-top:6px">Units</h3>
+    <div class="btnrow" id="unitBtns"></div>
+  </div>
+</div>
+
+<!-- MAIN: Diagram + Circumference + Area -->
+<div class="main">
+  <div class="diagram-area">
+    <div class="diagram">
+      <svg viewBox="0 0 260 260" aria-label="Circle diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/>
+          </marker>
+        </defs>
+        <circle cx="130" cy="130" r="105" fill="none" stroke="#000" stroke-width="3"/>
+        <line x1="130" y1="130" x2="235" y2="130" stroke="#000" stroke-width="3" marker-end="url(#arrow)"/>
+        <text id="rLabel" x="138" y="112" font-size="18"
+              font-family="Times New Roman" font-style="italic">r</text>
+        <text x="215" y="215" font-size="20"
+              font-family="Times New Roman" font-style="italic">l</text>
+      </svg>
+    </div>
+    <div class="formulas">
+      <div class="f"><i>l</i> = 2π<i>r</i></div>
+      <div class="f"><i>A</i> = π<i>r</i>²</div>
+    </div>
+  </div>
+
+  <div class="calc">
+    <h2>Circumference</h2>
+    <div class="line" id="lF"></div>
+    <div class="line" id="lS"></div>
+    <div class="answer-box" id="lE"></div><span class="answer-label">Exact</span>
+    <div class="trunc-line" id="lTrunc"></div>
+    <div class="answer-box" id="lN"></div><span class="answer-label" id="lNdp">2 d.p.</span>
+  </div>
+
+  <div class="calc">
+    <h2>Area</h2>
+    <div class="line" id="aF"></div>
+    <div class="line" id="aS"></div>
+    <div class="answer-box" id="aE"></div><span class="answer-label">Exact</span>
+    <div class="trunc-line" id="aTrunc"></div>
+    <div class="answer-box" id="aN"></div><span class="answer-label" id="aNdp">2 d.p.</span>
+  </div>
+</div>
+
+</section>
+</div>
+
+<script>
+let r = 7;
+let dp = 2;
+let unit = null;
+let dragging = false;
+
+const units = [
+  {symbol:'', name:'units'},
+  {symbol:'cm', name:'centimetre'},
+  {symbol:'mm', name:'millimetre'},
+  {symbol:'m', name:'metre'},
+  {symbol:'km', name:'kilometre'}
+];
+
+const numline = document.getElementById("numline");
+const numlineLabels = document.getElementById("numlineLabels");
+
+// Build draggable blue number line
+function buildNumline() {
+  numline.innerHTML = '';
+  numlineLabels.innerHTML = '';
+  
+  const intPart = Math.floor(r);
+  const low = Math.max(0, intPart - 1);
+  const high = Math.min(9, intPart + 2);
+  const range = high - low;
+  
+  // Add ticks and labels
+  for (let i = low; i <= high; i++) {
+    const pct = ((i - low) / range) * 100;
+    const tick = document.createElement("div");
+    tick.className = "numline-tick";
+    tick.style.left = pct + "%";
+    numline.appendChild(tick);
+    
+    const lbl = document.createElement("span");
+    lbl.textContent = i;
+    lbl.style.flex = "1";
+    lbl.style.textAlign = "center";
+    numlineLabels.appendChild(lbl);
+  }
+  
+  // Add draggable dot
+  const dot = document.createElement("div");
+  dot.className = "numline-dot";
+  const dotPct = ((r - low) / range) * 100;
+  dot.style.left = dotPct + "%";
+  numline.appendChild(dot);
+  
+  // Drag handlers
+  dot.addEventListener("mousedown", startDrag);
+  dot.addEventListener("touchstart", startDrag, {passive:false});
+}
+
+function startDrag(e) {
+  e.preventDefault();
+  dragging = true;
+  document.addEventListener("mousemove", onDrag);
+  document.addEventListener("mouseup", endDrag);
+  document.addEventListener("touchmove", onDrag, {passive:false});
+  document.addEventListener("touchend", endDrag);
+}
+
+function onDrag(e) {
+  if (!dragging) return;
+  e.preventDefault();
+  const rect = numline.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  let pct = (clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+  
+  const intPart = Math.floor(r);
+  const low = Math.max(0, intPart - 1);
+  const high = Math.min(9, intPart + 2);
+  const range = high - low;
+  
+  r = low + pct * range;
+  r = Math.max(0, Math.min(9, r));
+  update();
+}
+
+function endDrag() {
+  dragging = false;
+  document.removeEventListener("mousemove", onDrag);
+  document.removeEventListener("mouseup", endDrag);
+  document.removeEventListener("touchmove", onDrag);
+  document.removeEventListener("touchend", endDrag);
+}
+
+// Click on number line to jump
+numline.addEventListener("click", (e) => {
+  if (e.target.classList.contains("numline-dot")) return;
+  const rect = numline.getBoundingClientRect();
+  let pct = (e.clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+  
+  const intPart = Math.floor(r);
+  const low = Math.max(0, intPart - 1);
+  const high = Math.min(9, intPart + 2);
+  const range = high - low;
+  
+  r = low + pct * range;
+  r = Math.max(0, Math.min(9, r));
+  update();
+});
+
+// dp buttons 1–4
+const dpWrap = document.getElementById("dpBtns");
+[1,2,3,4].forEach(v => {
+  const b = document.createElement("button");
+  b.textContent = v;
+  if (v === 2) b.classList.add("active");
+  b.onclick = () => {
+    document.querySelectorAll("#dpBtns button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    dp = v;
+    update();
+  };
+  dpWrap.appendChild(b);
+});
+
+// unit buttons
+const unitWrap = document.getElementById("unitBtns");
+units.forEach((u, idx) => {
+  const b = document.createElement("button");
+  b.textContent = u.symbol || 'units';
+  b.title = u.name;
+  if (idx === 0) b.classList.add("active");
+  b.onclick = () => {
+    document.querySelectorAll("#unitBtns button").forEach(x => x.classList.remove("active"));
+    b.classList.add("active");
+    unit = u;
+    update();
+  };
+  unitWrap.appendChild(b);
+});
+
+function fmt(n, places) {
+  const nearInt = Math.abs(n - Math.round(n)) < 1e-12;
+  if (nearInt) return String(Math.round(n));
+  return Number(n).toFixed(places);
+}
+
+// Get truncated decimal with rounding info
+function getTruncatedWithRounding(n, places, unitStr) {
+  const truncStr = n.toFixed(places + 1);
+  const nextDigit = parseInt(truncStr[truncStr.length - 1], 10);
+  const roundUp = nextDigit >= 5;
+  
+  // Show truncated to dp+1 with ellipsis
+  const parts = truncStr.split('.');
+  const intPart = parts[0];
+  const decPart = parts[1];
+  
+  const arrow = roundUp ? '<span class="round-arrow round-up">↑</span>' : '<span class="round-arrow round-down">↓</span>';
+  
+  return `= ${intPart}.${decPart}…${unitStr} ${arrow}`;
+}
+
+function update() {
+  buildNumline();
+  
+  const discrete = Number.isInteger(r) || Math.abs(r - Math.round(r)) < 1e-12;
+  const unitStr = unit && unit.symbol ? ' ' + unit.symbol : '';
+  const unitStr2 = unit && unit.symbol ? ' ' + unit.symbol + '²' : '';
+
+  const rDisp = discrete ? String(Math.round(r)) : r.toFixed(2);
+  
+  document.getElementById("radiusDisplay").innerHTML = `<i>r</i> = ${rDisp}${unitStr}`;
+  document.getElementById("rLabel").textContent = "r = " + rDisp + unitStr;
+
+  const l = 2 * Math.PI * r;
+  const a = Math.PI * r * r;
+
+  const twoR = 2 * r;
+  const r2 = r * r;
+
+  const twoRDisp = fmt(twoR, discrete ? 0 : 2);
+  const r2Disp = fmt(r2, discrete ? 0 : 4);
+
+  // Circumference
+  document.getElementById("lF").innerHTML = `<i>l</i> = 2π<i>r</i>`;
+  document.getElementById("lS").innerHTML = `= 2π × ${rDisp}${unitStr}`;
+  document.getElementById("lE").innerHTML = `${twoRDisp}π${unitStr}`;
+  document.getElementById("lTrunc").innerHTML = getTruncatedWithRounding(l, dp, unitStr);
+  document.getElementById("lN").innerHTML = `≈ ${fmt(l, dp)}${unitStr}`;
+  document.getElementById("lNdp").textContent = `${dp} d.p.`;
+
+  // Area
+  document.getElementById("aF").innerHTML = `<i>A</i> = π<i>r</i>²`;
+  document.getElementById("aS").innerHTML = `= π × ${rDisp}²${unitStr2}`;
+  document.getElementById("aE").innerHTML = `${r2Disp}π${unitStr2}`;
+  document.getElementById("aTrunc").innerHTML = getTruncatedWithRounding(a, dp, unitStr2);
+  document.getElementById("aN").innerHTML = `≈ ${fmt(a, dp)}${unitStr2}`;
+  document.getElementById("aNdp").textContent = `${dp} d.p.`;
+}
+
+unit = units[0];
+update();
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+﻿__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+.vscode/
+node_modules/
+dist/
+build/
